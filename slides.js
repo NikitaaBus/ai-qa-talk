@@ -47,6 +47,7 @@
     {
       kicker: "Карта доклада",
       title: "7 practical cases",
+      layoutMode: "map",
       bullets: [
         { lead: "1", text: "Requirements → Test design" },
         { lead: "2", text: "Change impact (docs + code)" },
@@ -58,14 +59,6 @@
       ],
       diagram: diagramChain(["Input", "Analysis", "Execution", "Evidence", "Decision"], { size: "xl" }),
       diagramSize: "xl",
-      aside: {
-        title: "Поток",
-        bullets: [
-          "Input → Analysis → Execution",
-          "Evidence → Decision",
-          "Цель: быстрее и проверяемее",
-        ],
-      },
     },
     {
       kicker: "Контекст",
@@ -362,6 +355,7 @@
     slideRoot.setAttribute("aria-label", `${i + 1} из ${slides.length}`);
     slideRoot.classList.toggle("is-center", s.layout === "center");
     slideRoot.classList.toggle("is-diagram", s.layoutMode === "diagram");
+    slideRoot.classList.toggle("is-map", s.layoutMode === "map");
 
     if (s.kicker) slideRoot.appendChild(el("div", "kicker", s.kicker));
     slideRoot.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));
@@ -447,6 +441,7 @@
     targetEl.setAttribute("aria-label", `${i + 1} из ${slides.length}`);
     targetEl.classList.toggle("is-center", s.layout === "center");
     targetEl.classList.toggle("is-diagram", s.layoutMode === "diagram");
+    targetEl.classList.toggle("is-map", s.layoutMode === "map");
 
     if (s.kicker) targetEl.appendChild(el("div", "kicker", s.kicker));
     targetEl.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));
