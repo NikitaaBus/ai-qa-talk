@@ -359,6 +359,7 @@
     slideRoot.classList.toggle("is-diagram", s.layoutMode === "diagram");
     slideRoot.classList.toggle("is-map", s.layoutMode === "map");
     slideRoot.classList.toggle("is-compact", s.layoutMode === "compact");
+    slideRoot.classList.remove("overflow-1", "overflow-2");
 
     if (s.kicker) slideRoot.appendChild(el("div", "kicker", s.kicker));
     slideRoot.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));
@@ -432,6 +433,8 @@
     if (s.takeaway) {
       slideRoot.appendChild(el("div", "case-takeaway", s.takeaway));
     }
+
+    requestAnimationFrame(() => applyOverflowFix(slideRoot));
 
     counterCurrent.textContent = String(i + 1);
     prevLink.setAttribute("aria-disabled", i === 0 ? "true" : "false");
@@ -520,11 +523,25 @@
       targetEl.appendChild(el("div", "case-takeaway", s.takeaway));
     }
 
+    // In print mode we don't want dynamic overflow scaling.
+    if (!opts.suppressCounter) requestAnimationFrame(() => applyOverflowFix(targetEl));
+
     if (!opts.suppressCounter) {
       counterCurrent.textContent = String(i + 1);
       prevLink.setAttribute("aria-disabled", i === 0 ? "true" : "false");
       nextLink.setAttribute("aria-disabled", i === slides.length - 1 ? "true" : "false");
     }
+  }
+
+  function applyOverflowFix(targetEl) {
+    // Only needed on shorter screens.
+    if (window.innerHeight > 820) return;
+    const tooTall = () => targetEl.scrollHeight > targetEl.clientHeight + 2;
+
+    if (!tooTall()) return;
+    targetEl.classList.add("overflow-1");
+    if (!tooTall()) return;
+    targetEl.classList.add("overflow-2");
   }
 
   function enterPrintMode() {

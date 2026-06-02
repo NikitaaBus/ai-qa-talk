@@ -530,6 +530,75 @@ li strong {
     padding: 8px 10px;
   }
 
+  /* Dynamic overflow fix (applied by JS) */
+  .slide.overflow-1 {
+    padding: 16px 18px;
+  }
+
+  .slide.overflow-1 h1 {
+    font-size: 30px;
+  }
+
+  .slide.overflow-1 h2 {
+    font-size: 22px;
+  }
+
+  .slide.overflow-1 p {
+    font-size: 14px;
+  }
+
+  .slide.overflow-1 li {
+    font-size: 12px;
+    padding: 7px 9px;
+  }
+
+  .slide.overflow-1 .case-pain {
+    font-size: 14px;
+    padding: 8px 9px;
+  }
+
+  .slide.overflow-1 .case-takeaway {
+    font-size: 13px;
+    padding: 7px 9px;
+  }
+
+  .slide.overflow-1 .ba-text {
+    font-size: 12px;
+  }
+
+  .slide.overflow-2 {
+    padding: 14px 16px;
+  }
+
+  .slide.overflow-2 h1 {
+    font-size: 28px;
+  }
+
+  .slide.overflow-2 h2 {
+    font-size: 21px;
+  }
+
+  .slide.overflow-2 p {
+    font-size: 13px;
+  }
+
+  .slide.overflow-2 li {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+
+  .slide.overflow-2 .case-pain {
+    font-size: 13px;
+  }
+
+  .slide.overflow-2 .case-takeaway {
+    font-size: 12px;
+  }
+
+  .slide.overflow-2 .ba-text {
+    font-size: 11px;
+  }
+
   .case-pain {
     font-size: 15px;
     padding: 9px 10px;
