@@ -95,12 +95,7 @@
     {
       kicker: "Кейс 1 · схема",
       title: "Как агент превращает требования в покрытие",
-      bullets: [
-        {
-          lead: "Принцип",
-          text: "схема развёрнута в 2D (верх/бока/низ), чтобы её было удобно читать на 768p и в докладе.",
-        },
-      ],
+      layoutMode: "diagram",
       diagram: diagramCoverageMap(),
       diagramSize: "xl",
     },
@@ -183,12 +178,7 @@
     {
       kicker: "Кейс 4 · схема",
       title: "Feedback loop: evidence → triage → улучшение правил",
-      bullets: [
-        {
-          lead: "Зачем",
-          text: "делаем отдельный слайд под схему, чтобы не обрезалась по высоте и читалась крупно.",
-        },
-      ],
+      layoutMode: "diagram",
       diagram: diagramLoopXL(
         ["Run step", "Collect evidence", "Triage", "Fix / stabilize", "Update rules"],
         "Каждый fail оставляет след"
@@ -350,6 +340,7 @@
     slideRoot.innerHTML = "";
     slideRoot.setAttribute("aria-label", `${i + 1} из ${slides.length}`);
     slideRoot.classList.toggle("is-center", s.layout === "center");
+    slideRoot.classList.toggle("is-diagram", s.layoutMode === "diagram");
 
     if (s.kicker) slideRoot.appendChild(el("div", "kicker", s.kicker));
     slideRoot.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));
@@ -413,6 +404,7 @@
     targetEl.innerHTML = "";
     targetEl.setAttribute("aria-label", `${i + 1} из ${slides.length}`);
     targetEl.classList.toggle("is-center", s.layout === "center");
+    targetEl.classList.toggle("is-diagram", s.layoutMode === "diagram");
 
     if (s.kicker) targetEl.appendChild(el("div", "kicker", s.kicker));
     targetEl.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));
