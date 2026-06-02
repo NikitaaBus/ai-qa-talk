@@ -1273,6 +1273,17 @@
     const stepY = 46;
     const height = Math.max(340, startY + (labels.length - 1) * stepY + nodeH + 28);
 
+    const toneFor = (t) => {
+      const s = String(t || "").toLowerCase();
+      if (s.includes("spec") || s.includes("pdf") || s.includes("doc") || s.includes("code diff")) return "input";
+      if (s.includes("agent") || s.includes("planner") || s.includes("process")) return "agent";
+      if (s.includes("gap") || s.includes("risk") || s.includes("triage") || s.includes("diff")) return "risk";
+      if (s.includes("review") || s.includes("qa") || s.includes("gate")) return "human";
+      if (s.includes("yaml") || s.includes("plan") || s.includes("report") || s.includes("evidence")) return "output";
+      if (s.includes("checks")) return "human";
+      return "neutral";
+    };
+
     const pts = labels.map((t, i) => ({
       t,
       x: startX + i * stepX,
@@ -1296,8 +1307,11 @@
     const nodes = pts
       .map((p, i) => {
         const phase = (i % 5) * 0.6;
+        const tone = toneFor(p.t);
+        const fill = toneFill(tone, 0.12);
+        const stroke = toneStroke(tone, 0.72);
         return `<g class="float" style="--ph:${phase}s">
-          <rect x="${p.x}" y="${p.y}" rx="16" width="${nodeW}" height="${nodeH}" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
+          <rect x="${p.x}" y="${p.y}" rx="16" width="${nodeW}" height="${nodeH}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>
           <text x="${p.x + nodeW / 2}" y="${p.y + (nodeH / 2 + 6)}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" font-weight="700" fill="rgba(255,255,255,0.84)">${escapeSvg(
             p.t
           )}</text>
