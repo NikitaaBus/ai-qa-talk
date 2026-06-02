@@ -496,15 +496,25 @@ li strong {
   .case-pain {
     font-size: 18px;
     padding: 12px 12px;
+    margin-top: 10px;
   }
 
   .case-takeaway {
     font-size: 16px;
     padding: 10px 12px;
+    margin-top: 10px;
   }
 
   .ba-grid {
     gap: 10px;
+  }
+
+  .ba-card {
+    padding: 12px 12px;
+  }
+
+  .ba-title {
+    margin-bottom: 6px;
   }
 
   .ba-text {
