@@ -244,9 +244,41 @@
   function renderTerminal(targetEl, lines) {
     if (!lines?.length) return;
     const wrap = el("div", "terminal");
-    const pre = el("pre", "terminal-pre");
-    pre.textContent = lines.join("\n");
-    wrap.appendChild(pre);
+    const rows = el("div", "terminal-rows");
+
+    const makeRow = (line) => {
+      const row = el("div", "terminal-row");
+
+      const s = String(line ?? "");
+      if (s.startsWith(">")) {
+        const m = el("span", "t-prompt", ">");
+        row.appendChild(m);
+        row.appendChild(el("span", "t-text", s.replace(/^>\s?/, "")));
+        return row;
+      }
+
+      const okMatch = s.match(/^\[OK\]\s*/);
+      if (okMatch) {
+        row.appendChild(el("span", "t-ok", "[OK]"));
+        const rest = s.slice(okMatch[0].length);
+        const restSpan = el("span", "t-text", rest);
+        if (/\bhypothesis\b/i.test(rest) || /\bwarning\b/i.test(rest)) {
+          restSpan.classList.add("t-warn");
+        }
+        row.appendChild(restSpan);
+        return row;
+      }
+
+      const textSpan = el("span", "t-text", s);
+      if (/\bhypothesis\b/i.test(s) || /\bwarning\b/i.test(s)) {
+        textSpan.classList.add("t-warn");
+      }
+      row.appendChild(textSpan);
+      return row;
+    };
+
+    for (const line of lines) rows.appendChild(makeRow(line));
+    wrap.appendChild(rows);
     targetEl.appendChild(wrap);
   }
 
@@ -1866,31 +1898,53 @@
     const cy = height / 2 + 10;
     const r = 150;
     const n = Math.max(1, labels.length);
-    const nodeW = 160;
-    const nodeH = 46;
+    const nodeW = 170;
+    const nodeH = 50;
 
     const pts = labels.map((t, i) => {
       const a = (Math.PI * 2 * i) / n - Math.PI / 2;
       return { t, x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r };
     });
 
-    const edgePoint = (from, to) => {
+    // Rectangle perimeter anchor: intersection of ray with rect.
+    const rectEdgePoint = (from, to, halfW, halfH) => {
       const dx = to.x - from.x;
       const dy = to.y - from.y;
-      const len = Math.hypot(dx, dy) || 1;
-      const ux = dx / len;
-      const uy = dy / len;
-      return { x: from.x + ux * (nodeW / 2), y: from.y + uy * (nodeH / 2) };
+      const adx = Math.abs(dx) || 1e-6;
+      const ady = Math.abs(dy) || 1e-6;
+      const sx = halfW / adx;
+      const sy = halfH / ady;
+      const s = Math.min(sx, sy);
+      return { x: from.x + dx * s, y: from.y + dy * s };
     };
+
+    const toneFor = (t) => {
+      const s = String(t || "").toLowerCase();
+      if (s.includes("require")) return "input";
+      if (s.includes("test design")) return "human";
+      if (s.includes("automation")) return "agent";
+      if (s.includes("evidence")) return "output";
+      if (s.includes("triage")) return "risk";
+      if (s.includes("regression")) return "risk";
+      if (s.includes("analytics")) return "output";
+      if (s.includes("better")) return "output";
+      return "neutral";
+    };
+
+    const emphasize = (t) => String(t || "").toLowerCase().includes("better");
 
     const arrows = pts
       .map((p, i) => {
         const q = pts[(i + 1) % n];
-        const a = edgePoint(p, q);
-        const b = edgePoint(q, p);
+        const a = rectEdgePoint(p, q, nodeW / 2, nodeH / 2);
+        const b = rectEdgePoint(q, p, nodeW / 2, nodeH / 2);
         const mx = (a.x + b.x) / 2;
         const my = (a.y + b.y) / 2;
-        return `<path class="conn dash" d="M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}" stroke="rgba(255,255,255,0.18)" stroke-width="2" fill="none" marker-end="url(#rArr)"/>`;
+        const tone = toneFor(q.t);
+        return `<path class="conn dash" d="M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}" stroke="${toneStroke(
+          tone,
+          0.26
+        )}" stroke-width="2" fill="none" marker-end="url(#rArr)"/>`;
       })
       .join("");
 
@@ -1899,12 +1953,19 @@
         const x = p.x - nodeW / 2;
         const y = p.y - nodeH / 2;
         const phase = (i % 8) * 0.5;
-        return `<g class="float" style="--ph:${phase}s">
-          <rect x="${x}" y="${y}" rx="16" width="${nodeW}" height="${nodeH}" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)"/>
-          <text x="${p.x}" y="${p.y + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" font-weight="700" fill="rgba(255,255,255,0.86)">${escapeSvg(
-            p.t
-          )}</text>
-        </g>`;
+        const tone = toneFor(p.t);
+        const emp = emphasize(p.t);
+        const node = svgNode({
+          x,
+          y,
+          w: nodeW,
+          h: nodeH,
+          text: p.t,
+          tone,
+          emphasis: emp,
+          glowId: "softGlow",
+        });
+        return `<g class="float" style="--ph:${phase}s">${node}</g>`;
       })
       .join("");
 
