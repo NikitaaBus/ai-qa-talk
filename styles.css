@@ -464,7 +464,7 @@ li strong {
   }
 
   .slide {
-    padding: 22px 28px;
+    padding: 18px 22px;
   }
 
   h1 {
@@ -490,27 +490,28 @@ li strong {
 
   li {
     font-size: 16px;
-    padding: 10px 12px;
+    padding: 9px 11px;
   }
 
   .case-pain {
     font-size: 17px;
-    padding: 12px 12px;
+    padding: 10px 11px;
     margin-top: 10px;
   }
 
   .case-takeaway {
     font-size: 15px;
-    padding: 10px 12px;
-    margin-top: 10px;
+    padding: 9px 11px;
+    margin-top: 8px;
   }
 
   .ba-grid {
-    gap: 10px;
+    gap: 8px;
+    margin-top: 10px;
   }
 
   .ba-card {
-    padding: 12px 12px;
+    padding: 10px 11px;
   }
 
   .ba-title {
