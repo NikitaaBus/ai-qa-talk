@@ -515,6 +515,11 @@ li strong {
     gap: 14px;
   }
 
+  /* On 768p height, two-column content often overflows */
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
   .aside {
     padding: 12px 12px;
   }
