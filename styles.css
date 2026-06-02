@@ -505,15 +505,15 @@ li strong {
   }
 
   h1 {
-    font-size: 34px;
+    font-size: 32px;
   }
 
   h2 {
-    font-size: 25px;
+    font-size: 24px;
   }
 
   p {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .kicker {
@@ -522,23 +522,23 @@ li strong {
 
   ul {
     margin-top: 10px;
-    gap: 8px;
+    gap: 6px;
   }
 
   li {
-    font-size: 14px;
-    padding: 9px 11px;
+    font-size: 13px;
+    padding: 8px 10px;
   }
 
   .case-pain {
-    font-size: 17px;
-    padding: 10px 11px;
+    font-size: 15px;
+    padding: 9px 10px;
     margin-top: 10px;
   }
 
   .case-takeaway {
-    font-size: 15px;
-    padding: 9px 11px;
+    font-size: 14px;
+    padding: 8px 10px;
     margin-top: 8px;
   }
 
@@ -548,7 +548,7 @@ li strong {
   }
 
   .ba-card {
-    padding: 10px 11px;
+    padding: 9px 10px;
   }
 
   .ba-title {
