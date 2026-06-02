@@ -104,7 +104,7 @@
       takeaway: "ИИ не заменяет QA — он делает coverage управляемым и воспроизводимым.",
       aside: {
         title: "Выходные артефакты",
-        bullets: ["human‑readable doc", "структурированный YAML", "validator/repair/reviewer цепочка"],
+        bullets: ["DOCX • YAML • validator/repair/reviewer"],
       },
     },
     {
