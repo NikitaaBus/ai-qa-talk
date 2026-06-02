@@ -47,6 +47,13 @@ body {
   gap: 18px;
 }
 
+@media (min-width: 1200px) {
+  .deck {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
 .deck.is-print {
   grid-template-rows: 1fr;
   padding: 0;
@@ -129,7 +136,7 @@ body {
 }
 
 .slide {
-  width: min(1100px, 100%);
+  width: min(1280px, 100%);
   margin: 0 auto;
   border-radius: var(--radius);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.04));
@@ -356,7 +363,7 @@ li strong {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  width: min(1100px, 100%);
+  width: min(1280px, 100%);
   margin: 0 auto;
 }
 
