@@ -63,6 +63,7 @@
     {
       kicker: "Контекст",
       title: "Как меняется роль QA с ИИ",
+      layoutMode: "compact",
       bullets: [
         {
           lead: "От «инструментов выполнения»",
@@ -356,6 +357,7 @@
     slideRoot.classList.toggle("is-center", s.layout === "center");
     slideRoot.classList.toggle("is-diagram", s.layoutMode === "diagram");
     slideRoot.classList.toggle("is-map", s.layoutMode === "map");
+    slideRoot.classList.toggle("is-compact", s.layoutMode === "compact");
 
     if (s.kicker) slideRoot.appendChild(el("div", "kicker", s.kicker));
     slideRoot.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));
@@ -442,6 +444,7 @@
     targetEl.classList.toggle("is-center", s.layout === "center");
     targetEl.classList.toggle("is-diagram", s.layoutMode === "diagram");
     targetEl.classList.toggle("is-map", s.layoutMode === "map");
+    targetEl.classList.toggle("is-compact", s.layoutMode === "compact");
 
     if (s.kicker) targetEl.appendChild(el("div", "kicker", s.kicker));
     targetEl.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));

@@ -444,6 +444,21 @@ li strong {
   max-height: 32vh;
 }
 
+/* Compact content slides (Context etc.) */
+.slide.is-compact ul {
+  gap: 10px;
+}
+
+.slide.is-compact li {
+  font-size: 17px;
+  padding: 12px 14px;
+}
+
+.slide.is-compact .aside li {
+  font-size: 15px;
+  padding: 10px 12px;
+}
+
 @media (max-width: 980px) {
   .slide {
     padding: 34px 26px;
@@ -593,6 +608,28 @@ li strong {
 
   .slide.is-map .diagram svg {
     max-height: 26vh;
+  }
+
+  .slide.is-compact ul {
+    gap: 6px;
+  }
+
+  .slide.is-compact li {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .slide.is-compact .aside {
+    padding: 10px 10px;
+  }
+
+  .slide.is-compact .aside-title {
+    margin-bottom: 6px;
+  }
+
+  .slide.is-compact .aside li {
+    font-size: 13px;
+    padding: 8px 10px;
   }
 }
 
