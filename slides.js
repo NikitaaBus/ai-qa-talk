@@ -15,31 +15,28 @@
       kicker: "QA × AI",
       title: "Как ИИ усиливает QA",
       context: "От разрозненных задач к управляемым QA‑пайплайнам.",
-      cards: [
-        { text: "REQ", tone: "human" },
-        { text: "DIFF", tone: "human" },
-        { text: "AUTO", tone: "ai" },
-        { text: "EVIDENCE", tone: "output" },
-        { text: "ANALYTICS", tone: "human" },
-      ],
-      takeaway: "Вывод: ИИ усиливает роль QA инженера, а не заменяет её.",
       layout: "center",
+      layoutMode: "orbit-hero",
+      diagram: diagramOrbitHero({
+        center: "QA Engineer",
+        nodes: ["Requirements", "Impact", "Autotests", "Evidence", "Regression", "Logs", "Analytics"],
+      }),
+      diagramSize: "xl",
+      takeaway: "Вывод: ИИ усиливает роль QA инженера, а не заменяет её.",
     },
     {
       kicker: "Карта доклада",
       title: "7 cases",
-      context: "Навигация по кейсам — один слайд = одна идея.",
-      cards: [
-        { text: "CASE 1", tone: "human" },
-        { text: "CASE 2", tone: "human" },
-        { text: "CASE 3", tone: "ai" },
-        { text: "CASE 4", tone: "output" },
-        { text: "CASE 5", tone: "risk" },
-      ],
-      diagram: diagramChain(["Input", "Analysis", "Execution", "Evidence", "Decision"], { size: "xl" }),
+      context: "Две части: daily QA tasks → managed QA pipelines.",
+      layoutMode: "constellation-map",
+      diagram: diagramConstellationMap({
+        leftTitle: "Part 1 · daily tasks",
+        rightTitle: "Part 2 · pipelines",
+        left: ["Case 1", "Case 2", "Case 3"],
+        right: ["Case 4", "Case 5", "Case 6", "Case 7"],
+      }),
       diagramSize: "xl",
       takeaway: "Вывод: Сначала структура, потом выполнение.",
-      layoutMode: "map",
     },
     {
       kicker: "Контекст",
@@ -57,74 +54,66 @@
       kicker: "Case 1",
       title: "Requirements → test design",
       context: "Требования плотные и неоднозначные — нужен управляемый разбор.",
-      cards: [
-        { text: "REQ", tone: "human" },
-        { text: "GAPS", tone: "risk" },
-        { text: "CHECKS", tone: "ai" },
-        { text: "SUITES", tone: "ai" },
-        { text: "YAML", tone: "output" },
-      ],
+      layoutMode: "diagonal-flow",
+      diagram: diagramDiagonalFlow(["Spec", "Agent", "Checks", "YAML", "Review"]),
+      diagramSize: "xl",
       takeaway: "Вывод: Coverage становится трассируемым и проверяемым.",
     },
     {
       kicker: "Case 2",
       title: "Change impact",
       context: "Diff есть — impact неочевиден. Нужен быстрый bridge до тест‑плана.",
-      cards: [
-        { text: "DOC DIFF", tone: "human" },
-        { text: "CODE DIFF", tone: "human" },
-        { text: "AFFECTED", tone: "risk" },
-        { text: "MIN SET", tone: "ai" },
-      ],
+      layoutMode: "diagonal-flow",
+      diagram: diagramDiagonalFlow(["Doc diff", "Code diff", "Affected", "Min set", "Plan"]),
+      diagramSize: "xl",
       takeaway: "Вывод: Проверяем минимум критичного — осознанно.",
     },
     {
       kicker: "Case 3",
       title: "Autotests pipeline",
       context: "Не «ИИ пишет тест», а процесс: план → код → ревью.",
-      cards: [
-        { text: "PLANNER", tone: "ai" },
-        { text: "DEV", tone: "ai" },
-        { text: "REVIEWER", tone: "human" },
-        { text: "@QASE", tone: "output" },
-      ],
+      layoutMode: "role-triangle",
+      diagram: diagramRoleTriangle({
+        a: "Planner",
+        b: "Dev agent",
+        c: "Reviewer",
+        center: "Quality gate",
+        bottom: "Approved",
+      }),
+      diagramSize: "xl",
       takeaway: "Вывод: ИИ ускоряет automation только в строгих правилах.",
     },
     {
       kicker: "Case 4",
       title: "Evidence-first execution",
       context: "Fail без evidence = ручная отладка. Evidence делает падение расследуемым.",
-      cards: [
-        { text: "SCREEN", tone: "output" },
-        { text: "UI DUMP", tone: "output" },
-        { text: "ACTION LOG", tone: "output" },
-        { text: "TRIAGE", tone: "human" },
-        { text: "RULE", tone: "ai" },
-      ],
+      layoutMode: "evidence-board",
+      diagram: diagramEvidenceBoard(["SCREEN", "UI DUMP", "ACTION LOG", "TRIAGE", "RULE"]),
+      diagramSize: "xl",
       takeaway: "Вывод: Каждый fail улучшает runbook и стабильность.",
     },
     {
       kicker: "Case 5",
       title: "Regression planning",
       context: "Регресс растёт: дубли, flaky, low-value — нужен risk‑based план.",
-      cards: [
-        { text: "SMOKE", tone: "human" },
-        { text: "CRITICAL", tone: "human" },
-        { text: "HIGH RISK", tone: "risk" },
-        { text: "FLAKY", tone: "risk" },
-        { text: "MATRIX", tone: "ai" },
-      ],
+      layoutMode: "hub-skills",
+      diagram: diagramHubSkills({
+        center: "Regression agent",
+        nodes: ["Impact", "Qase", "Flaky", "Automation", "Summary"],
+      }),
+      diagramSize: "xl",
       takeaway: "Вывод: План объясняет «почему» и порядок проверок.",
     },
     {
       kicker: "Case 6",
       title: "Logs & triage",
       context: "Симптом → логи → причина → понятный bug report.",
-      cards: [
-        { text: "SYMPTOM", tone: "risk" },
-        { text: "LOGS", tone: "human" },
-        { text: "CAUSE", tone: "ai" },
-        { text: "BUG REPORT", tone: "output" },
+      layoutMode: "terminal-triage",
+      terminal: [
+        "analyze logs",
+        "[OK] grouped errors",
+        "[OK] hypothesis",
+        "[OK] bug report",
       ],
       takeaway: "Вывод: Быстрее от наблюдения к проверяемой гипотезе.",
     },
@@ -132,25 +121,26 @@
       kicker: "Case 7",
       title: "Analytics validation",
       context: "Если аналитика неверна — решения неверны. Проверяем как контракт.",
-      cards: [
-        { text: "EVENTS", tone: "human" },
-        { text: "JOURNEYS", tone: "human" },
-        { text: "EXPECTED", tone: "ai" },
-        { text: "ACTUAL", tone: "ai" },
-        { text: "DIFF", tone: "risk" },
-      ],
+      layoutMode: "contract-stack",
+      stack: ["SPEC", "EXPECTED", "UI RUN", "DISPATCH", "PERSISTENCE", "ACTUAL", "DIFF"],
       takeaway: "Вывод: expected → actual → diff = доказательная проверка.",
     },
     {
       kicker: "Синтез",
       title: "QA lifecycle",
-      context: "Одна цепочка от требований до решений о качестве.",
-      diagram: diagramChain(
-        ["Requirements", "Test design", "Automation", "Evidence", "Regression", "Analytics", "Better decisions"],
-        { size: "xl" }
-      ),
+      context: "Один жизненный цикл качества — как кольцо.",
+      layoutMode: "lifecycle-ring",
+      diagram: diagramLifecycleRing([
+        "Requirements",
+        "Test design",
+        "Automation",
+        "Evidence",
+        "Triage",
+        "Regression",
+        "Analytics",
+        "Better decisions",
+      ]),
       diagramSize: "xl",
-      layoutMode: "diagram",
       takeaway: "Вывод: ИИ превращает опыт QA в повторяемый процесс.",
     },
   ];
@@ -189,13 +179,47 @@
     if (!cards?.length) return;
     const board = el("div", "board");
     const grid = el("div", "board-grid");
-    for (const c of cards.slice(0, 5)) {
+    for (const [idx, c] of cards.slice(0, 5).entries()) {
       const card = el("div", "board-card", c.text);
+      card.style.setProperty("--d", `${idx * 70}ms`);
       if (c.tone) card.classList.add(String(c.tone));
       grid.appendChild(card);
     }
     board.appendChild(grid);
     targetEl.appendChild(board);
+  }
+
+  function renderTerminal(targetEl, lines) {
+    if (!lines?.length) return;
+    const wrap = el("div", "terminal");
+    const pre = el("pre", "terminal-pre");
+    pre.textContent = lines.join("\n");
+    wrap.appendChild(pre);
+    targetEl.appendChild(wrap);
+  }
+
+  function renderStack(targetEl, layers) {
+    if (!layers?.length) return;
+    const wrap = el("div", "stack");
+    const max = Math.min(layers.length, 8);
+    for (let i = 0; i < max; i++) {
+      const layer = el("div", "stack-layer", layers[i]);
+      layer.style.setProperty("--i", String(i));
+      layer.style.setProperty("--d", `${i * 60}ms`);
+      wrap.appendChild(layer);
+    }
+    targetEl.appendChild(wrap);
+  }
+
+  function applyEnterMotion(targetEl) {
+    if (deckRoot.classList.contains("is-print")) return;
+    targetEl.classList.remove("enter");
+    // Force reflow for retrigger.
+    // eslint-disable-next-line no-unused-expressions
+    targetEl.offsetHeight;
+    targetEl.classList.add("enter");
+    const kids = Array.from(targetEl.children);
+    kids.forEach((k, idx) => k.style?.setProperty("--d", `${idx * 60}ms`));
   }
 
   function renderSlide(i) {
@@ -207,6 +231,15 @@
     slideRoot.classList.toggle("is-map", s.layoutMode === "map");
     slideRoot.classList.toggle("is-compact", s.layoutMode === "compact");
     slideRoot.classList.toggle("is-case-tight", s.layoutMode === "case-tight");
+    slideRoot.classList.toggle("is-orbit-hero", s.layoutMode === "orbit-hero");
+    slideRoot.classList.toggle("is-constellation", s.layoutMode === "constellation-map");
+    slideRoot.classList.toggle("is-diagonal", s.layoutMode === "diagonal-flow");
+    slideRoot.classList.toggle("is-role-triangle", s.layoutMode === "role-triangle");
+    slideRoot.classList.toggle("is-evidence-board", s.layoutMode === "evidence-board");
+    slideRoot.classList.toggle("is-hub-skills", s.layoutMode === "hub-skills");
+    slideRoot.classList.toggle("is-terminal", s.layoutMode === "terminal-triage");
+    slideRoot.classList.toggle("is-contract", s.layoutMode === "contract-stack");
+    slideRoot.classList.toggle("is-ring", s.layoutMode === "lifecycle-ring");
     slideRoot.classList.remove("overflow-1", "overflow-2");
 
     if (s.kicker) slideRoot.appendChild(el("div", "kicker", s.kicker));
@@ -222,6 +255,14 @@
 
     if (s.cards?.length) {
       renderBoardCards(slideRoot, s.cards);
+    }
+
+    if (s.terminal?.length) {
+      renderTerminal(slideRoot, s.terminal);
+    }
+
+    if (s.stack?.length) {
+      renderStack(slideRoot, s.stack);
     }
 
     if (s.pain) {
@@ -290,7 +331,10 @@
       slideRoot.appendChild(el("div", "takeaway", s.takeaway));
     }
 
-    requestAnimationFrame(() => applyOverflowFix(slideRoot));
+    requestAnimationFrame(() => {
+      applyOverflowFix(slideRoot);
+      applyEnterMotion(slideRoot);
+    });
 
     counterCurrent.textContent = String(i + 1);
     prevLink.setAttribute("aria-disabled", i === 0 ? "true" : "false");
@@ -306,6 +350,15 @@
     targetEl.classList.toggle("is-map", s.layoutMode === "map");
     targetEl.classList.toggle("is-compact", s.layoutMode === "compact");
     targetEl.classList.toggle("is-case-tight", s.layoutMode === "case-tight");
+    targetEl.classList.toggle("is-orbit-hero", s.layoutMode === "orbit-hero");
+    targetEl.classList.toggle("is-constellation", s.layoutMode === "constellation-map");
+    targetEl.classList.toggle("is-diagonal", s.layoutMode === "diagonal-flow");
+    targetEl.classList.toggle("is-role-triangle", s.layoutMode === "role-triangle");
+    targetEl.classList.toggle("is-evidence-board", s.layoutMode === "evidence-board");
+    targetEl.classList.toggle("is-hub-skills", s.layoutMode === "hub-skills");
+    targetEl.classList.toggle("is-terminal", s.layoutMode === "terminal-triage");
+    targetEl.classList.toggle("is-contract", s.layoutMode === "contract-stack");
+    targetEl.classList.toggle("is-ring", s.layoutMode === "lifecycle-ring");
 
     if (s.kicker) targetEl.appendChild(el("div", "kicker", s.kicker));
     targetEl.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));
@@ -320,6 +373,14 @@
 
     if (s.cards?.length) {
       renderBoardCards(targetEl, s.cards);
+    }
+
+    if (s.terminal?.length) {
+      renderTerminal(targetEl, s.terminal);
+    }
+
+    if (s.stack?.length) {
+      renderStack(targetEl, s.stack);
     }
 
     if (s.pain) {
@@ -387,6 +448,8 @@
     if (s.takeaway) {
       targetEl.appendChild(el("div", "takeaway", s.takeaway));
     }
+
+    if (!opts.suppressCounter) applyEnterMotion(targetEl);
 
     // In print mode we don't want dynamic overflow scaling.
     if (!opts.suppressCounter) requestAnimationFrame(() => applyOverflowFix(targetEl));
@@ -929,6 +992,408 @@
       ${agent}
       ${skills}
       ${outputs}
+    </svg>`;
+  }
+
+  function diagramOrbitHero(model) {
+    const width = 980;
+    const height = 420;
+    const cx = width / 2;
+    const cy = height / 2 + 12;
+    const r = 150;
+    const nodes = model?.nodes || [];
+
+    const pts = nodes.map((t, i) => {
+      const a = (Math.PI * 2 * i) / Math.max(1, nodes.length) - Math.PI / 2;
+      return { t, x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r };
+    });
+
+    const lines = pts
+      .map(
+        (p) =>
+          `<path class="conn dash" d="M ${cx} ${cy} L ${p.x} ${p.y}" stroke="rgba(255,255,255,0.16)" stroke-width="1.6" fill="none"/>`
+      )
+      .join("");
+
+    const orbit = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>`;
+
+    const nodeSvg = pts
+      .map((p, i) => {
+        const w = 150;
+        const h = 44;
+        const x = p.x - w / 2;
+        const y = p.y - h / 2;
+        const phase = (i % 6) * 0.7;
+        return `<g class="float" style="--ph:${phase}s">
+          <rect x="${x}" y="${y}" rx="14" width="${w}" height="${h}" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+          <text x="${p.x}" y="${p.y + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" fill="rgba(255,255,255,0.82)">${escapeSvg(
+            p.t
+          )}</text>
+        </g>`;
+      })
+      .join("");
+
+    const center = `<g>
+      <circle cx="${cx}" cy="${cy}" r="52" fill="rgba(124,92,255,0.14)" stroke="rgba(124,92,255,0.45)" stroke-width="2"/>
+      <circle cx="${cx}" cy="${cy}" r="40" fill="rgba(0,0,0,0.12)" stroke="rgba(255,255,255,0.14)" stroke-width="1.5"/>
+      <text x="${cx}" y="${cy + 5}" text-anchor="middle" font-family="Manrope, system-ui" font-size="15" font-weight="700" fill="rgba(255,255,255,0.92)">${escapeSvg(
+        model?.center || "QA Engineer"
+      )}</text>
+    </g>`;
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="QA orbit">
+      <defs>
+        <linearGradient id="orbG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(124,92,255,0.65)"/>
+          <stop offset="1" stop-color="rgba(37,214,199,0.55)"/>
+        </linearGradient>
+      </defs>
+      <path d="M 40 46 C 240 8, 740 8, 940 46" stroke="url(#orbG)" stroke-width="2" fill="none" opacity="0.85"/>
+      ${orbit}
+      ${lines}
+      ${nodeSvg}
+      ${center}
+    </svg>`;
+  }
+
+  function diagramConstellationMap(model) {
+    const width = 980;
+    const height = 420;
+    const leftX = 280;
+    const rightX = 700;
+    const yTop = 120;
+    const gapY = 74;
+
+    const left = (model?.left || []).map((t, i) => ({ t, x: leftX, y: yTop + i * gapY }));
+    const right = (model?.right || []).map((t, i) => ({ t, x: rightX, y: yTop + i * gapY }));
+
+    const all = [...left, ...right];
+
+    const connectors = [
+      ...left.map((p) => `<path class="conn dash" d="M ${p.x} ${p.y} C ${p.x + 90} ${p.y - 10}, ${rightX - 90} ${p.y - 10}, ${rightX} ${p.y}" />`),
+      `<path class="conn dash" d="M ${leftX} ${left[left.length - 1]?.y || 0} C ${leftX + 120} ${height - 70}, ${
+        rightX - 120
+      } ${height - 70}, ${rightX} ${right[right.length - 1]?.y || 0}" />`,
+    ].join("");
+
+    const title = `<text x="${leftX}" y="78" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" fill="rgba(255,255,255,0.58)">${escapeSvg(
+      model?.leftTitle || "Part 1"
+    )}</text>
+    <text x="${rightX}" y="78" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" fill="rgba(255,255,255,0.58)">${escapeSvg(
+      model?.rightTitle || "Part 2"
+    )}</text>`;
+
+    const nodes = all
+      .map((p, i) => {
+        const phase = (i % 5) * 0.65;
+        return `<g class="float" style="--ph:${phase}s">
+          <circle cx="${p.x}" cy="${p.y}" r="28" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+          <text x="${p.x}" y="${p.y + 5}" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" font-weight="700" fill="rgba(255,255,255,0.86)">${escapeSvg(
+            p.t
+          )}</text>
+        </g>`;
+      })
+      .join("");
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Cases constellation">
+      <defs>
+        <linearGradient id="cG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(37,214,199,0.40)"/>
+          <stop offset="1" stop-color="rgba(124,92,255,0.40)"/>
+        </linearGradient>
+      </defs>
+      <path d="M 40 46 C 240 8, 740 8, 940 46" stroke="url(#cG)" stroke-width="2" fill="none" opacity="0.8"/>
+      <g stroke="rgba(255,255,255,0.14)" stroke-width="1.6" fill="none">
+        ${connectors}
+      </g>
+      ${title}
+      ${nodes}
+    </svg>`;
+  }
+
+  function diagramDiagonalFlow(labels) {
+    const width = 980;
+    const height = 320;
+    const nodeW = 170;
+    const nodeH = 48;
+    const startX = 120;
+    const startY = 70;
+    const stepX = 150;
+    const stepY = 52;
+
+    const pts = labels.map((t, i) => ({
+      t,
+      x: startX + i * stepX,
+      y: startY + i * stepY,
+    }));
+
+    const arrows = pts
+      .slice(0, -1)
+      .map((p, i) => {
+        const n = pts[i + 1];
+        const x1 = p.x + nodeW - 6;
+        const y1 = p.y + nodeH / 2;
+        const x2 = n.x + 6;
+        const y2 = n.y + nodeH / 2;
+        const mx = (x1 + x2) / 2;
+        const my = (y1 + y2) / 2 - 18;
+        return `<path class="conn dash" d="M ${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}" stroke="rgba(255,255,255,0.22)" stroke-width="2" fill="none" marker-end="url(#arr)"/>`;
+      })
+      .join("");
+
+    const nodes = pts
+      .map((p, i) => {
+        const phase = (i % 5) * 0.6;
+        return `<g class="float" style="--ph:${phase}s">
+          <rect x="${p.x}" y="${p.y}" rx="16" width="${nodeW}" height="${nodeH}" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
+          <text x="${p.x + nodeW / 2}" y="${p.y + (nodeH / 2 + 6)}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" font-weight="700" fill="rgba(255,255,255,0.84)">${escapeSvg(
+            p.t
+          )}</text>
+        </g>`;
+      })
+      .join("");
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Diagonal flow">
+      <defs>
+        <marker id="arr" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6" fill="rgba(255,255,255,0.28)"/>
+        </marker>
+        <linearGradient id="dG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(124,92,255,0.55)"/>
+          <stop offset="1" stop-color="rgba(255,202,92,0.30)"/>
+        </linearGradient>
+      </defs>
+      <path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#dG)" stroke-width="2" fill="none" opacity="0.8"/>
+      ${arrows}
+      ${nodes}
+    </svg>`;
+  }
+
+  function diagramRoleTriangle(model) {
+    const width = 980;
+    const height = 360;
+    const A = { x: 490, y: 82, t: model?.a || "Planner" };
+    const B = { x: 690, y: 220, t: model?.b || "Dev agent" };
+    const C = { x: 290, y: 220, t: model?.c || "Reviewer" };
+    const center = { x: 490, y: 198, t: model?.center || "Quality gate" };
+    const bottom = { x: 490, y: 300, t: model?.bottom || "Approved" };
+
+    const node = (p, tone, i) => {
+      const w = 178;
+      const h = 52;
+      const x = p.x - w / 2;
+      const y = p.y - h / 2;
+      const phase = (i % 5) * 0.55;
+      return `<g class="float ${tone || ""}" style="--ph:${phase}s">
+        <rect x="${x}" y="${y}" rx="16" width="${w}" height="${h}" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
+        <text x="${p.x}" y="${p.y + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" font-weight="700" fill="rgba(255,255,255,0.86)">${escapeSvg(
+          p.t
+        )}</text>
+      </g>`;
+    };
+
+    const arrows = [
+      [A, B],
+      [B, C],
+      [C, A],
+    ]
+      .map((pair) => {
+        const [p, q] = pair;
+        const mx = (p.x + q.x) / 2;
+        const my = (p.y + q.y) / 2;
+        return `<path class="conn dash" d="M ${p.x} ${p.y} Q ${mx} ${my - 18} ${q.x} ${q.y}" stroke="rgba(255,255,255,0.22)" stroke-width="2" fill="none" marker-end="url(#arrT)"/>`;
+      })
+      .join("");
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Role triangle">
+      <defs>
+        <marker id="arrT" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6" fill="rgba(255,255,255,0.28)"/>
+        </marker>
+        <linearGradient id="tG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(37,214,199,0.45)"/>
+          <stop offset="1" stop-color="rgba(124,92,255,0.45)"/>
+        </linearGradient>
+      </defs>
+      <path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#tG)" stroke-width="2" fill="none" opacity="0.8"/>
+      ${arrows}
+      ${node(A, "ai", 0)}
+      ${node(B, "ai", 1)}
+      ${node(C, "human", 2)}
+      <g>
+        <circle cx="${center.x}" cy="${center.y}" r="44" fill="rgba(110,231,168,0.10)" stroke="rgba(110,231,168,0.38)" stroke-width="2"/>
+        <text x="${center.x}" y="${center.y + 5}" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" font-weight="700" fill="rgba(255,255,255,0.88)">${escapeSvg(
+          center.t
+        )}</text>
+      </g>
+      <g>
+        <rect x="${bottom.x - 110}" y="${bottom.y - 22}" rx="16" width="220" height="44" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)"/>
+        <text x="${bottom.x}" y="${bottom.y + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" font-weight="700" fill="rgba(255,255,255,0.88)">${escapeSvg(
+          bottom.t
+        )}</text>
+      </g>
+    </svg>`;
+  }
+
+  function diagramEvidenceBoard(labels) {
+    const width = 980;
+    const height = 380;
+    const pts = [
+      { t: labels[0] || "SCREEN", x: 240, y: 120 },
+      { t: labels[1] || "UI DUMP", x: 740, y: 120 },
+      { t: labels[2] || "ACTION LOG", x: 240, y: 250 },
+      { t: labels[3] || "TRIAGE", x: 740, y: 250 },
+      { t: labels[4] || "RULE", x: 490, y: 318 },
+    ];
+
+    const lines = [
+      [0, 4],
+      [1, 4],
+      [2, 4],
+      [3, 4],
+      [0, 2],
+      [1, 3],
+    ]
+      .map(([a, b]) => {
+        const p = pts[a];
+        const q = pts[b];
+        const mx = (p.x + q.x) / 2;
+        const my = (p.y + q.y) / 2;
+        return `<path class="conn dash" d="M ${p.x} ${p.y} Q ${mx} ${my - 12} ${q.x} ${q.y}" stroke="rgba(255,255,255,0.16)" stroke-width="1.8" fill="none"/>`;
+      })
+      .join("");
+
+    const node = (p, i) => {
+      const w = p.t === (labels[4] || "RULE") ? 210 : 190;
+      const h = 52;
+      const x = p.x - w / 2;
+      const y = p.y - h / 2;
+      const phase = (i % 5) * 0.6;
+      return `<g class="float" style="--ph:${phase}s">
+        <rect x="${x}" y="${y}" rx="16" width="${w}" height="${h}" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
+        <text x="${p.x}" y="${p.y + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" font-weight="700" fill="rgba(255,255,255,0.86)">${escapeSvg(
+          p.t
+        )}</text>
+      </g>`;
+    };
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Evidence board">
+      <defs>
+        <linearGradient id="eG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(110,231,168,0.35)"/>
+          <stop offset="1" stop-color="rgba(255,202,92,0.25)"/>
+        </linearGradient>
+      </defs>
+      <path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#eG)" stroke-width="2" fill="none" opacity="0.8"/>
+      ${lines}
+      ${pts.map(node).join("")}
+    </svg>`;
+  }
+
+  function diagramHubSkills(model) {
+    const width = 980;
+    const height = 380;
+    const cx = 490;
+    const cy = 200;
+    const r = 150;
+    const nodes = model?.nodes || [];
+    const pts = nodes.map((t, i) => {
+      const a = (Math.PI * 2 * i) / Math.max(1, nodes.length) - Math.PI / 2;
+      return { t, x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r };
+    });
+
+    const lines = pts
+      .map(
+        (p) =>
+          `<path class="conn dash" d="M ${cx} ${cy} L ${p.x} ${p.y}" stroke="rgba(255,255,255,0.16)" stroke-width="1.8" fill="none"/>`
+      )
+      .join("");
+
+    const node = (p, i) => {
+      const w = 160;
+      const h = 46;
+      const x = p.x - w / 2;
+      const y = p.y - h / 2;
+      const phase = (i % 6) * 0.6;
+      return `<g class="float" style="--ph:${phase}s">
+        <rect x="${x}" y="${y}" rx="16" width="${w}" height="${h}" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+        <text x="${p.x}" y="${p.y + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" font-weight="700" fill="rgba(255,255,255,0.86)">${escapeSvg(
+          p.t
+        )}</text>
+      </g>`;
+    };
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Hub skills">
+      <defs>
+        <linearGradient id="hG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(255,202,92,0.32)"/>
+          <stop offset="1" stop-color="rgba(124,92,255,0.42)"/>
+        </linearGradient>
+      </defs>
+      <path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#hG)" stroke-width="2" fill="none" opacity="0.8"/>
+      ${lines}
+      ${pts.map(node).join("")}
+      <g>
+        <circle cx="${cx}" cy="${cy}" r="56" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+        <text x="${cx}" y="${cy + 5}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" font-weight="700" fill="rgba(255,255,255,0.92)">${escapeSvg(
+          model?.center || "Regression agent"
+        )}</text>
+      </g>
+    </svg>`;
+  }
+
+  function diagramLifecycleRing(labels) {
+    const width = 980;
+    const height = 420;
+    const cx = width / 2;
+    const cy = height / 2 + 10;
+    const r = 150;
+    const n = Math.max(1, labels.length);
+
+    const pts = labels.map((t, i) => {
+      const a = (Math.PI * 2 * i) / n - Math.PI / 2;
+      return { t, x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r };
+    });
+
+    const arrows = pts
+      .map((p, i) => {
+        const q = pts[(i + 1) % n];
+        const mx = (p.x + q.x) / 2;
+        const my = (p.y + q.y) / 2;
+        return `<path class="conn dash" d="M ${p.x} ${p.y} Q ${mx} ${my} ${q.x} ${q.y}" stroke="rgba(255,255,255,0.18)" stroke-width="2" fill="none" marker-end="url(#rArr)"/>`;
+      })
+      .join("");
+
+    const nodes = pts
+      .map((p, i) => {
+        const w = 160;
+        const h = 46;
+        const x = p.x - w / 2;
+        const y = p.y - h / 2;
+        const phase = (i % 8) * 0.5;
+        return `<g class="float" style="--ph:${phase}s">
+          <rect x="${x}" y="${y}" rx="16" width="${w}" height="${h}" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+          <text x="${p.x}" y="${p.y + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" font-weight="700" fill="rgba(255,255,255,0.86)">${escapeSvg(
+            p.t
+          )}</text>
+        </g>`;
+      })
+      .join("");
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Lifecycle ring">
+      <defs>
+        <marker id="rArr" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6" fill="rgba(255,255,255,0.26)"/>
+        </marker>
+        <linearGradient id="rG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(37,214,199,0.40)"/>
+          <stop offset="1" stop-color="rgba(110,231,168,0.28)"/>
+        </linearGradient>
+      </defs>
+      <path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#rG)" stroke-width="2" fill="none" opacity="0.8"/>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
+      ${arrows}
+      ${nodes}
     </svg>`;
   }
 
