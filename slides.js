@@ -19,7 +19,7 @@
       ],
       layout: "center",
       diagram: diagramWeb({
-        center: "QA",
+        center: "QA Engineer",
         top: ["Requirements/test design", "Structure/validation"],
         mid: ["Docs+code impact", "Autotests pipeline", "Evidence-first"],
         bottom: ["Regression planning", "Logs/triage", "Analytics", "Feedback loop/prod signals"],
@@ -43,6 +43,29 @@
         ],
       }),
       diagramSize: "xl",
+    },
+    {
+      kicker: "Карта доклада",
+      title: "7 practical cases",
+      bullets: [
+        { lead: "1", text: "Requirements → Test design" },
+        { lead: "2", text: "Change impact (docs + code)" },
+        { lead: "3", text: "Autotests pipeline" },
+        { lead: "4", text: "Evidence-first execution" },
+        { lead: "5", text: "Regression planning" },
+        { lead: "6", text: "Logs & triage" },
+        { lead: "7", text: "Analytics & validation" },
+      ],
+      diagram: diagramChain(["Input", "Analysis", "Execution", "Evidence", "Decision"], { size: "xl" }),
+      diagramSize: "xl",
+      aside: {
+        title: "Поток",
+        bullets: [
+          "Input → Analysis → Execution",
+          "Evidence → Decision",
+          "Цель: быстрее и проверяемее",
+        ],
+      },
     },
     {
       kicker: "Контекст",
@@ -73,20 +96,17 @@
     {
       kicker: "Кейс 1",
       title: "Анализ требований и тест‑дизайн",
+      pain: "QA тратит время на ручной разбор требований — и всё равно рискует пропустить важное.",
       bullets: [
-        {
-          lead: "Проблема",
-          text: "требования часто неполные/неоднозначные: детали «в голове», зависимость от дизайна/API, конфликты. Ручной разбор занимает время и зависит от опыта.",
-        },
-        {
-          lead: "Решение",
-          text: "агент переводит документ в трассируемые артефакты и покрытие: REQ → risks/gaps → questions → checks → suites → coverage matrix.",
-        },
-        {
-          lead: "Почему это работает",
-          text: "ничего не додумываем. Если данных нет — фиксируем gap, помечаем checks как blocked и показываем, что именно этим заблокировано. Доверие обеспечивается validator/repair/reviewer.",
-        },
+        { lead: "Agent", text: "делает REQ‑cards, gaps/questions, checks/suites, coverage matrix." },
+        { lead: "Risk", text: "ничего не додумывает: пробелы → блокеры → список вопросов." },
+        { lead: "Quality gate", text: "validator/repair/reviewer → проверяемый артефакт." },
       ],
+      beforeAfter: {
+        before: "QA вручную читает 20+ страниц, выписывает вопросы, позже собирает первые тесты.",
+        after: "Агент за минуты собирает структуру и блокеры; QA делает review и фиксирует решения в документации/YAML.",
+      },
+      takeaway: "ИИ не заменяет QA — он делает coverage управляемым и воспроизводимым.",
       aside: {
         title: "Выходные артефакты",
         bullets: ["human‑readable doc", "структурированный YAML", "validator/repair/reviewer цепочка"],
@@ -349,6 +369,10 @@
       for (const p of s.body) slideRoot.appendChild(el("p", "", p));
     }
 
+    if (s.pain) {
+      slideRoot.appendChild(el("div", "case-pain", s.pain));
+    }
+
     const contentWrap = s.aside && s.bullets ? el("div", "grid-2") : null;
 
     const bulletHost = s.bullets ? el("ul", "") : null;
@@ -387,11 +411,28 @@
       slideRoot.appendChild(bulletHost);
     }
 
+    if (s.beforeAfter) {
+      const grid = el("div", "ba-grid");
+      const before = el("div", "ba-card");
+      before.appendChild(el("div", "ba-title", "Before"));
+      before.appendChild(el("div", "ba-text", s.beforeAfter.before || ""));
+      const after = el("div", "ba-card");
+      after.appendChild(el("div", "ba-title", "After"));
+      after.appendChild(el("div", "ba-text", s.beforeAfter.after || ""));
+      grid.appendChild(before);
+      grid.appendChild(after);
+      slideRoot.appendChild(grid);
+    }
+
     if (s.diagram) {
       const wrap = el("div", "diagram");
       if (s.diagramSize === "xl") wrap.classList.add("is-xl");
       wrap.innerHTML = s.diagram;
       slideRoot.appendChild(wrap);
+    }
+
+    if (s.takeaway) {
+      slideRoot.appendChild(el("div", "case-takeaway", s.takeaway));
     }
 
     counterCurrent.textContent = String(i + 1);
@@ -411,6 +452,10 @@
 
     if (s.body?.length) {
       for (const p of s.body) targetEl.appendChild(el("p", "", p));
+    }
+
+    if (s.pain) {
+      targetEl.appendChild(el("div", "case-pain", s.pain));
     }
 
     const contentWrap = s.aside && s.bullets ? el("div", "grid-2") : null;
@@ -451,11 +496,28 @@
       targetEl.appendChild(bulletHost);
     }
 
+    if (s.beforeAfter) {
+      const grid = el("div", "ba-grid");
+      const before = el("div", "ba-card");
+      before.appendChild(el("div", "ba-title", "Before"));
+      before.appendChild(el("div", "ba-text", s.beforeAfter.before || ""));
+      const after = el("div", "ba-card");
+      after.appendChild(el("div", "ba-title", "After"));
+      after.appendChild(el("div", "ba-text", s.beforeAfter.after || ""));
+      grid.appendChild(before);
+      grid.appendChild(after);
+      targetEl.appendChild(grid);
+    }
+
     if (s.diagram) {
       const wrap = el("div", "diagram");
       if (s.diagramSize === "xl") wrap.classList.add("is-xl");
       wrap.innerHTML = s.diagram;
       targetEl.appendChild(wrap);
+    }
+
+    if (s.takeaway) {
+      targetEl.appendChild(el("div", "case-takeaway", s.takeaway));
     }
 
     if (!opts.suppressCounter) {

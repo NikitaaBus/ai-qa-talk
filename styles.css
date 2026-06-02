@@ -11,6 +11,12 @@
   --ok: #6ee7a8;
   --shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
   --radius: 22px;
+
+  /* Semantic colors */
+  --ai: var(--accent);
+  --human: var(--accent2);
+  --risk: var(--warn);
+  --output: var(--ok);
 }
 
 * {
@@ -213,6 +219,95 @@ li strong {
   font-weight: 600;
 }
 
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tag {
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tag.ai {
+  border-color: rgba(124, 92, 255, 0.42);
+  background: rgba(124, 92, 255, 0.10);
+}
+
+.tag.human {
+  border-color: rgba(37, 214, 199, 0.42);
+  background: rgba(37, 214, 199, 0.10);
+}
+
+.tag.risk {
+  border-color: rgba(255, 202, 92, 0.55);
+  background: rgba(255, 202, 92, 0.10);
+}
+
+.tag.output {
+  border-color: rgba(110, 231, 168, 0.55);
+  background: rgba(110, 231, 168, 0.10);
+}
+
+.case-pain {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  font-size: 22px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+.case-takeaway {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(110, 231, 168, 0.30);
+  background: rgba(110, 231, 168, 0.08);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.ba-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.ba-card {
+  padding: 14px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.ba-title {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.60);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.ba-text {
+  font-size: 15px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.84);
+  font-weight: 300;
+}
+
 .kicker {
   font-size: 14px;
   text-transform: uppercase;
@@ -389,6 +484,24 @@ li strong {
   li {
     font-size: 16px;
     padding: 10px 12px;
+  }
+
+  .case-pain {
+    font-size: 18px;
+    padding: 12px 12px;
+  }
+
+  .case-takeaway {
+    font-size: 16px;
+    padding: 10px 12px;
+  }
+
+  .ba-grid {
+    gap: 10px;
+  }
+
+  .ba-text {
+    font-size: 14px;
   }
 
   .grid-2 {
