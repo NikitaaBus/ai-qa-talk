@@ -90,6 +90,7 @@
     {
       kicker: "Кейс 1",
       title: "Анализ требований и тест‑дизайн",
+      layoutMode: "compact",
       pain: "QA тратит время на ручной разбор требований — и всё равно рискует пропустить важное.",
       bullets: [
         { lead: "Agent", text: "делает REQ‑cards, gaps/questions, checks/suites, coverage matrix." },
