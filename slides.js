@@ -973,10 +973,12 @@
       const lines = items
         .slice(0, 8)
         .map(
-          (t, i) =>
-            `<text x="${ix}" y="${iy + i * 18}" font-family="Manrope, system-ui" font-size="${fontSize}" fill="rgba(255,255,255,0.78)">${escapeSvg(
+          (t, i) => {
+            const fs = String(t).length > 70 ? 11 : fontSize;
+            return `<text x="${ix}" y="${iy + i * 18}" font-family="Manrope, system-ui" font-size="${fs}" fill="rgba(255,255,255,0.78)">${escapeSvg(
               t
-            )}</text>`
+            )}</text>`;
+          }
         )
         .join("");
       return `
@@ -1019,7 +1021,8 @@
     ]);
 
     const outputs = box(364, 214, 582, 74, "Outputs", [
-      "Smoke • CriticalPath • HighRisk • PlatformMatrix • AutomationCandidates • OpenQuestions • FinalRecommendation",
+      "Smoke • CriticalPath • HighRisk • PlatformMatrix",
+      "AutomationCandidates • OpenQuestions • FinalRecommendation",
     ]);
 
     const arrows = `
