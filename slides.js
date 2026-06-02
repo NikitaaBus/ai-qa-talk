@@ -86,7 +86,7 @@
     },
     {
       kicker: "Карта доклада",
-      title: "7 cases",
+      title: "7 практических кейсов",
       context: "Две части: daily QA tasks → managed QA pipelines.",
       layoutMode: "constellation-map",
       diagram: diagramConstellationMap({
@@ -165,7 +165,7 @@
       context: "Симптом → логи → причина → понятный bug report.",
       layoutMode: "terminal-triage",
       terminal: [
-        "analyze logs",
+        "> analyze logs",
         "[OK] grouped errors",
         "[OK] hypothesis",
         "[OK] bug report",
@@ -1451,8 +1451,8 @@
       </defs>
       <path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#tG)" stroke-width="2" fill="none" opacity="0.8"/>
       ${arrows}
-      ${node(A, "ai", 0)}
-      ${node(B, "ai", 1)}
+      ${node(A, "agent", 0)}
+      ${node(B, "agent", 1)}
       ${node(C, "human", 2)}
       <g>
         <circle cx="${center.x}" cy="${center.y}" r="44" fill="rgba(110,231,168,0.10)" stroke="rgba(110,231,168,0.38)" stroke-width="2"/>

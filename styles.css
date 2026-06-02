@@ -298,6 +298,11 @@ ul {
   background: rgba(124, 92, 255, 0.10);
 }
 
+.board-card.agent {
+  border-color: rgba(124, 92, 255, 0.42);
+  background: rgba(124, 92, 255, 0.10);
+}
+
 .board-card.human {
   border-color: rgba(37, 214, 199, 0.42);
   background: rgba(37, 214, 199, 0.10);
@@ -501,6 +506,11 @@ li strong {
 }
 
 .tag.ai {
+  border-color: rgba(124, 92, 255, 0.42);
+  background: rgba(124, 92, 255, 0.10);
+}
+
+.tag.agent {
   border-color: rgba(124, 92, 255, 0.42);
   background: rgba(124, 92, 255, 0.10);
 }
