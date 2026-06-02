@@ -12,312 +12,146 @@
 
   const slides = [
     {
-      kicker: "Доклад",
+      kicker: "QA × AI",
       title: "Как ИИ усиливает QA",
-      body: [
-        "ИИ — это не «ещё один инструмент», а рабочий слой поверх процессов QA: анализ требований, тест-дизайн, регрессия, triage, автотесты и аналитика.",
+      context: "От разрозненных задач к управляемым QA‑пайплайнам.",
+      cards: [
+        { text: "REQ", tone: "human" },
+        { text: "DIFF", tone: "human" },
+        { text: "AUTO", tone: "ai" },
+        { text: "EVIDENCE", tone: "output" },
+        { text: "ANALYTICS", tone: "human" },
       ],
+      takeaway: "Вывод: ИИ усиливает роль QA инженера, а не заменяет её.",
       layout: "center",
-      diagram: diagramWeb({
-        center: "QA Engineer",
-        top: ["Requirements/test design", "Structure/validation"],
-        mid: ["Docs+code impact", "Autotests pipeline", "Evidence-first"],
-        bottom: ["Regression planning", "Logs/triage", "Analytics", "Feedback loop/prod signals"],
-        links: [
-          ["QA", "Requirements/test design"],
-          ["QA", "Docs+code impact"],
-          ["QA", "Autotests pipeline"],
-          ["QA", "Evidence-first"],
-          ["QA", "Regression planning"],
-          ["QA", "Logs/triage"],
-          ["QA", "Analytics"],
-          ["QA", "Structure/validation"],
-          ["QA", "Feedback loop/prod signals"],
-
-          // cross-links to feel like a system
-          ["Requirements/test design", "Regression planning"],
-          ["Docs+code impact", "Regression planning"],
-          ["Evidence-first", "Logs/triage"],
-          ["Analytics", "Regression planning"],
-          ["Structure/validation", "Autotests pipeline"],
-        ],
-      }),
-      diagramSize: "xl",
     },
     {
       kicker: "Карта доклада",
-      title: "7 practical cases",
-      layoutMode: "map",
-      bullets: [
-        { lead: "1", text: "Requirements → Test design" },
-        { lead: "2", text: "Change impact (docs + code)" },
-        { lead: "3", text: "Autotests pipeline" },
-        { lead: "4", text: "Evidence-first execution" },
-        { lead: "5", text: "Regression planning" },
-        { lead: "6", text: "Logs & triage" },
-        { lead: "7", text: "Analytics & validation" },
+      title: "7 cases",
+      context: "Навигация по кейсам — один слайд = одна идея.",
+      cards: [
+        { text: "CASE 1", tone: "human" },
+        { text: "CASE 2", tone: "human" },
+        { text: "CASE 3", tone: "ai" },
+        { text: "CASE 4", tone: "output" },
+        { text: "CASE 5", tone: "risk" },
       ],
       diagram: diagramChain(["Input", "Analysis", "Execution", "Evidence", "Decision"], { size: "xl" }),
       diagramSize: "xl",
+      takeaway: "Вывод: Сначала структура, потом выполнение.",
+      layoutMode: "map",
     },
     {
       kicker: "Контекст",
-      title: "Как меняется роль QA с ИИ",
-      layoutMode: "compact",
-      bullets: [
-        {
-          lead: "От «инструментов выполнения»",
-          text: "к «инструментам мышления»: ИИ помогает структурировать данные, видеть пробелы и связывать артефакты.",
-        },
-        {
-          lead: "Ответственность не исчезает",
-          text: "QA задаёт рамки, проверяет результат, строит воспроизводимые пайплайны и отделяет факты от правдоподобных догадок.",
-        },
-        {
-          lead: "Ценность",
-          text: "ускорение и повышение качества решений на всём жизненном цикле: от требований до результатов прогонов.",
-        },
+      title: "QA становится Quality Engineer",
+      context: "ИИ помогает быстрее думать, а QA — задаёт рамки и проверяет результат.",
+      cards: [
+        { text: "FRAME", tone: "human" },
+        { text: "CHECK", tone: "human" },
+        { text: "PIPELINE", tone: "ai" },
+        { text: "EVIDENCE", tone: "output" },
       ],
-      aside: {
-        title: "Главная мысль",
-        bullets: [
-          "Сегодня ИИ — неотъемлемая часть QA‑практики и процессов обеспечения качества.",
-          "ИИ — рабочий слой поверх привычных процессов: валидация требований, тест‑дизайн, генерация автотестов, регрессия, bug triage, работа с аналитикой.",
-          "Ценность: позволяет автономно выстраивать управляемые и воспроизводимые сценарии, соединяя их в единую end‑to‑end цепочку жизненного цикла качества — быстрее и эффективнее.",
-        ],
-      },
+      takeaway: "Вывод: Ответственность остаётся у инженера.",
     },
     {
-      kicker: "Кейс 1",
-      title: "Анализ требований и тест‑дизайн",
-      layoutMode: "case-tight",
-      pain: "QA тратит время на ручной разбор требований — и всё равно рискует пропустить важное.",
-      bullets: [
-        { lead: "Agent", text: "делает REQ‑cards, gaps/questions, checks/suites, coverage matrix." },
-        { lead: "Risk", text: "ничего не додумывает: пробелы → блокеры → список вопросов." },
-        { lead: "Quality gate", text: "validator/repair/reviewer → проверяемый артефакт." },
+      kicker: "Case 1",
+      title: "Requirements → test design",
+      context: "Требования плотные и неоднозначные — нужен управляемый разбор.",
+      cards: [
+        { text: "REQ", tone: "human" },
+        { text: "GAPS", tone: "risk" },
+        { text: "CHECKS", tone: "ai" },
+        { text: "SUITES", tone: "ai" },
+        { text: "YAML", tone: "output" },
       ],
-      beforeAfter: {
-        before: "QA вручную читает 20+ страниц, выписывает вопросы, позже собирает первые тесты.",
-        after: "Агент за минуты собирает структуру и блокеры; QA делает review и фиксирует решения в документации/YAML.",
-      },
-      takeaway: "ИИ не заменяет QA — он делает coverage управляемым и воспроизводимым.",
-      aside: {
-        title: "Выходные артефакты",
-        bullets: ["DOCX • YAML • validator/repair/reviewer"],
-      },
+      takeaway: "Вывод: Coverage становится трассируемым и проверяемым.",
     },
     {
-      kicker: "Кейс 1 · схема",
-      title: "Как агент превращает требования в покрытие",
-      layoutMode: "diagram",
-      diagram: diagramCoverageMap(),
-      diagramSize: "xl",
-    },
-    {
-      kicker: "Кейс 1 · пример",
-      title: "Smart Restart: быстрее к структуре",
-      bullets: [
-        { lead: "Вход", text: "PDF ~20+ страниц: state machine, ограничения платформ, acceptance criteria." },
-        { lead: "Выход за минуты", text: "REQ-cards, вопросы/неоднозначности, атомарные checks, suites, YAML-контракт." },
-        {
-          lead: "Сигнал качества",
-          text: "agent честно показывает, что «неисполняемо сейчас» и почему (нет данных/ожиданий).",
-        },
+      kicker: "Case 2",
+      title: "Change impact",
+      context: "Diff есть — impact неочевиден. Нужен быстрый bridge до тест‑плана.",
+      cards: [
+        { text: "DOC DIFF", tone: "human" },
+        { text: "CODE DIFF", tone: "human" },
+        { text: "AFFECTED", tone: "risk" },
+        { text: "MIN SET", tone: "ai" },
       ],
-      aside: {
-        title: "Практика",
-        bullets: [
-          "Вопросы привязаны к конкретным требованиям.",
-          "Проверки помечены как executable / blocked.",
-          "После ответов — дополняем spec и пересобираем артефакты без ручной каши.",
-        ],
-      },
+      takeaway: "Вывод: Проверяем минимум критичного — осознанно.",
     },
     {
-      kicker: "Кейс 2",
-      title: "Анализ изменений (docs + code)",
-      pain: "Один небольшой diff может сломать критичный сценарий — и это не видно без impact analysis.",
-      bullets: [
-        { lead: "Docs", text: "diff → affected requirements → обновить suites/checks." },
-        { lead: "Code", text: "diff → зоны риска → affected scenarios → minimal checks." },
-        { lead: "Value", text: "быстро связываем изменения с пользовательскими рисками." },
+      kicker: "Case 3",
+      title: "Autotests pipeline",
+      context: "Не «ИИ пишет тест», а процесс: план → код → ревью.",
+      cards: [
+        { text: "PLANNER", tone: "ai" },
+        { text: "DEV", tone: "ai" },
+        { text: "REVIEWER", tone: "human" },
+        { text: "@QASE", tone: "output" },
       ],
-      takeaway: "Diff → impact → проверяем только важное (и объясняем почему).",
-      aside: {
-        title: "Что выигрываем",
-        bullets: ["меньше ручного сравнения", "меньше зависимости от памяти", "прозрачность перед регрессией/релизом"],
-      },
+      takeaway: "Вывод: ИИ ускоряет automation только в строгих правилах.",
     },
     {
-      kicker: "Кейс 2 · схема",
-      title: "Change impact: docs + code → test plan",
-      layoutMode: "diagram",
-      diagram: diagramChain(["Doc/Code diff", "Agent", "Risk areas", "Affected scenarios", "Updated plan"], { size: "xl" }),
-      diagramSize: "xl",
-    },
-    {
-      kicker: "Кейс 3",
-      title: "Генерация и поддержка автотестов",
-      pain: "Автотесты быстро растут и быстро становятся дорогими в поддержке без строгого процесса.",
-      bullets: [
-        { lead: "Pipeline", text: "plan → code → review → fix → approved." },
-        { lead: "Traceability", text: "Qase ID → @Qase test → runs/evidence → итог." },
-        { lead: "Quality", text: "единый стиль + меньше flaky/дубликатов." },
+      kicker: "Case 4",
+      title: "Evidence-first execution",
+      context: "Fail без evidence = ручная отладка. Evidence делает падение расследуемым.",
+      cards: [
+        { text: "SCREEN", tone: "output" },
+        { text: "UI DUMP", tone: "output" },
+        { text: "ACTION LOG", tone: "output" },
+        { text: "TRIAGE", tone: "human" },
+        { text: "RULE", tone: "ai" },
       ],
-      beforeAfter: {
-        before: "Просим ИИ «напиши тест» → получаем код без стандарта и с риском flakiness.",
-        after: "Оркестратор ведёт роли: Planner/Dev/Reviewer → предсказуемый стиль и quality gate.",
-      },
-      takeaway: "ИИ ускоряет automation только внутри строгого процесса.",
+      takeaway: "Вывод: Каждый fail улучшает runbook и стабильность.",
     },
     {
-      kicker: "Кейс 3 · схема",
-      title: "Autotests pipeline: roles + quality gate",
-      layoutMode: "diagram",
-      diagram: diagramChain(["Qase case", "Planner", "Dev agent", "Reviewer", "APPROVED PR"], { size: "xl" }),
-      diagramSize: "xl",
-    },
-    {
-      kicker: "Кейс 3 · критерии",
-      title: "Что делает автотест «хорошим»",
-      bullets: [
-        { lead: "Проверяет реальный риск", text: "а не просто «повторяет клики»." },
-        { lead: "Читаемость и структура", text: "предсказуемый стиль в репозитории, понятная цель." },
-        { lead: "Стабильность", text: "сильные ожидания, устойчивые локаторы, разумные ожидания/тайминги." },
-        { lead: "Стоимость поддержки", text: "не плодим дубли и fragile реализации." },
+      kicker: "Case 5",
+      title: "Regression planning",
+      context: "Регресс растёт: дубли, flaky, low-value — нужен risk‑based план.",
+      cards: [
+        { text: "SMOKE", tone: "human" },
+        { text: "CRITICAL", tone: "human" },
+        { text: "HIGH RISK", tone: "risk" },
+        { text: "FLAKY", tone: "risk" },
+        { text: "MATRIX", tone: "ai" },
       ],
+      takeaway: "Вывод: План объясняет «почему» и порядок проверок.",
     },
     {
-      kicker: "Кейс 4",
-      title: "Evidence‑first в agentic‑подходе",
-      pain: "Тест упал, но причины не видно — без evidence triage превращается в ручную отладку.",
-      bullets: [
-        { lead: "Evidence", text: "screenshot + UI‑dump + шаги + состояние UI." },
-        { lead: "Triage", text: "product bug vs flaky vs env/data vs locator/timing." },
-        { lead: "Loop", text: "фиксируем паттерн как правило для следующих прогонов." },
+      kicker: "Case 6",
+      title: "Logs & triage",
+      context: "Симптом → логи → причина → понятный bug report.",
+      cards: [
+        { text: "SYMPTOM", tone: "risk" },
+        { text: "LOGS", tone: "human" },
+        { text: "CAUSE", tone: "ai" },
+        { text: "BUG REPORT", tone: "output" },
       ],
-      beforeAfter: {
-        before: "Fail → QA вручную разбирает «что было на экране» и почему не сработало.",
-        after: "Fail → evidence пакет → классификация причины → стабилизация + обновление runbook.",
-      },
-      takeaway: "Не «упал тест», а полный контекст падения и следующий шаг.",
-      aside: {
-        title: "История",
-        bullets: ["“tap ≠ focus” → видно по evidence → правим взаимодействие → закрепляем паттерн"],
-      },
+      takeaway: "Вывод: Быстрее от наблюдения к проверяемой гипотезе.",
     },
     {
-      kicker: "Кейс 4 · схема",
-      title: "Feedback loop: evidence → triage → улучшение правил",
-      layoutMode: "diagram",
-      diagram: diagramLoopXL(
-        ["Run step", "Collect evidence", "Triage", "Fix / stabilize", "Update rules"],
-        "Каждый fail оставляет след"
-      ),
-      diagramSize: "xl",
-    },
-    {
-      kicker: "Кейс 4 · реализация",
-      title: "Black‑box iOS через iPhone MCP",
-      bullets: [
-        { lead: "YAML‑сценарии", text: "runner готовит план, агент выполняет на устройстве." },
-        { lead: "Наблюдаемость шага", text: "что было на экране, что найдено/не найдено, что изменилось до/после." },
-        { lead: "Артефакты", text: "runs с evidence → база для triage и стабилизации сценариев." },
+      kicker: "Case 7",
+      title: "Analytics validation",
+      context: "Если аналитика неверна — решения неверны. Проверяем как контракт.",
+      cards: [
+        { text: "EVENTS", tone: "human" },
+        { text: "JOURNEYS", tone: "human" },
+        { text: "EXPECTED", tone: "ai" },
+        { text: "ACTUAL", tone: "ai" },
+        { text: "DIFF", tone: "risk" },
       ],
-    },
-    {
-      kicker: "Кейс 5",
-      title: "Регрессия и приоритизация проверок",
-      pain: "Регресс растёт быстрее продукта: дубли, flaky и проверки «по привычке».",
-      bullets: [
-        { lead: "Agent", text: "анализирует регресс как систему, а не как список." },
-        { lead: "Risk-based", text: "smoke / critical path / high‑risk / platform matrix." },
-        { lead: "Outputs", text: "automation candidates + open questions + final recommendation." },
-      ],
-      beforeAfter: {
-        before: "Запускаем «всё подряд», потому что так исторически сложилось.",
-        after: "Строим план: smoke → high‑risk → full regression + явные риски и причины.",
-      },
-      takeaway: "ИИ помогает выбрать, что проверять первым — но решение остаётся за QA.",
-      aside: {
-        title: "Принципы",
-        bullets: ["не додумывать данные", "отделять факты от гипотез", "объяснять «почему» приоритизации"],
-      },
-    },
-    {
-      kicker: "Кейс 5 · архитектура",
-      title: "Regression Planning Agent: агент + skills",
-      layoutMode: "diagram",
-      diagram: diagramAgentSkills(),
-      diagramSize: "xl",
-    },
-    {
-      kicker: "Кейс 6",
-      title: "Логи, ошибки приложения и triage",
-      bullets: [
-        { lead: "От симптома к гипотезе", text: "группировка ошибок, сравнение успешного/неуспешного сценария." },
-        {
-          lead: "Классификация причин",
-          text: "product bug vs flaky test vs test data vs environment issue (и что проверить дальше).",
-        },
-        { lead: "Bug report", text: "превратить «сырое наблюдение» в структурированный репорт с evidence." },
-      ],
-    },
-    {
-      kicker: "Кейс 7",
-      title: "Аналитика: scenario mining + analytics validation",
-      pain: "Если аналитика неверная — решения по продукту и тестированию тоже будут неверными.",
-      bullets: [
-        { lead: "Mining", text: "events → sessions → journeys → critical paths." },
-        { lead: "Contract", text: "spec → expected → actual → diff report." },
-        { lead: "Triage", text: "dispatch vs persistence → где именно проблема." },
-      ],
-      beforeAfter: {
-        before: "Проверяем аналитику «глазами»: ушёл ли запрос — непонятно, сохранилось ли событие.",
-        after: "Проверяем как контракт: expected → actual → strict compare → diff report.",
-      },
-      takeaway: "Аналитика — часть качества продукта, её нужно тестировать доказательно.",
-      aside: {
-        title: "Зачем QA это нужно",
-        bullets: ["приоритизация по реальному поведению", "доверие к данным", "быстрый triage расхождений"],
-      },
-    },
-    {
-      kicker: "Кейс 7 · схема",
-      title: "Analytics validation: expected → actual → diff",
-      layoutMode: "diagram",
-      diagram: diagramChain(
-        ["Spec", "Expected", "UI run", "Dispatch", "Persistence", "Actual", "Compare", "Diff"],
-        { size: "xl" }
-      ),
-      diagramSize: "xl",
+      takeaway: "Вывод: expected → actual → diff = доказательная проверка.",
     },
     {
       kicker: "Синтез",
-      title: "Что объединяет все кейсы",
-      bullets: [
-        { lead: "Структура > текст", text: "артефакты должны быть проверяемыми (валидация/ремонт/ревью)." },
-        { lead: "Пайплайны", text: "от требований до evidence: планирование и исполнение разделены." },
-        { lead: "Feedback loop", text: "каждый fail оставляет след и улучшает правила/процесс." },
-        { lead: "Production signals", text: "логи, аналитика и реальные пути пользователей усиливают QA‑решения." },
-      ],
-    },
-    {
-      kicker: "Практика",
-      title: "С чего начать прямо сейчас",
-      bullets: [
-        { lead: "Начать с малого", text: "одна регулярная задача с понятным входом/выходом → усилить ИИ." },
-        {
-          lead: "Примеры задач",
-          text: "requirements review, impact analysis, smoke/regression selection, triage падений, bug report, summary.",
-        },
-        { lead: "Важно", text: "безопасность данных + проверяемый процесс дают реальную ценность." },
-      ],
-      aside: {
-        title: "Финал",
-        bullets: ["ИИ не заменяет опыт QA.", "ИИ умножает скорость и способность видеть риски раньше."],
-      },
+      title: "QA lifecycle",
+      context: "Одна цепочка от требований до решений о качестве.",
+      diagram: diagramChain(
+        ["Requirements", "Test design", "Automation", "Evidence", "Regression", "Analytics", "Better decisions"],
+        { size: "xl" }
+      ),
+      diagramSize: "xl",
+      layoutMode: "diagram",
+      takeaway: "Вывод: ИИ превращает опыт QA в повторяемый процесс.",
     },
   ];
 
@@ -351,6 +185,19 @@
     return node;
   }
 
+  function renderBoardCards(targetEl, cards) {
+    if (!cards?.length) return;
+    const board = el("div", "board");
+    const grid = el("div", "board-grid");
+    for (const c of cards.slice(0, 5)) {
+      const card = el("div", "board-card", c.text);
+      if (c.tone) card.classList.add(String(c.tone));
+      grid.appendChild(card);
+    }
+    board.appendChild(grid);
+    targetEl.appendChild(board);
+  }
+
   function renderSlide(i) {
     const s = slides[i];
     slideRoot.innerHTML = "";
@@ -365,8 +212,16 @@
     if (s.kicker) slideRoot.appendChild(el("div", "kicker", s.kicker));
     slideRoot.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));
 
+    if (s.context) {
+      slideRoot.appendChild(el("p", "context", s.context));
+    }
+
     if (s.body?.length) {
       for (const p of s.body) slideRoot.appendChild(el("p", "", p));
+    }
+
+    if (s.cards?.length) {
+      renderBoardCards(slideRoot, s.cards);
     }
 
     if (s.pain) {
@@ -432,7 +287,7 @@
     }
 
     if (s.takeaway) {
-      slideRoot.appendChild(el("div", "case-takeaway", s.takeaway));
+      slideRoot.appendChild(el("div", "takeaway", s.takeaway));
     }
 
     requestAnimationFrame(() => applyOverflowFix(slideRoot));
@@ -455,8 +310,16 @@
     if (s.kicker) targetEl.appendChild(el("div", "kicker", s.kicker));
     targetEl.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));
 
+    if (s.context) {
+      targetEl.appendChild(el("p", "context", s.context));
+    }
+
     if (s.body?.length) {
       for (const p of s.body) targetEl.appendChild(el("p", "", p));
+    }
+
+    if (s.cards?.length) {
+      renderBoardCards(targetEl, s.cards);
     }
 
     if (s.pain) {
@@ -522,7 +385,7 @@
     }
 
     if (s.takeaway) {
-      targetEl.appendChild(el("div", "case-takeaway", s.takeaway));
+      targetEl.appendChild(el("div", "takeaway", s.takeaway));
     }
 
     // In print mode we don't want dynamic overflow scaling.
