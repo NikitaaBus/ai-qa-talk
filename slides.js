@@ -170,6 +170,7 @@
         "[OK] hypothesis",
         "[OK] bug report",
       ],
+      triageFlow: ["SYMPTOM", "LOGS", "HYPOTHESIS", "BUG REPORT"],
       takeaway: "Вывод: Быстрее от наблюдения к проверяемой гипотезе.",
     },
     {
@@ -299,6 +300,93 @@
     targetEl.appendChild(wrap);
   }
 
+  function diagramTriageFlow(labels) {
+    const width = 980;
+    const height = 120;
+    const nodeW = 210;
+    const nodeH = 54;
+    const y = 34;
+    const x0 = 70;
+    const gap = 18;
+
+    const toneFor = (t) => {
+      const s = String(t || "").toLowerCase();
+      if (s.includes("symptom")) return "risk";
+      if (s.includes("logs")) return "input";
+      if (s.includes("hypothesis")) return "human";
+      if (s.includes("bug")) return "output";
+      return "neutral";
+    };
+
+    const defs = `<defs>
+      <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.26)"/>
+      </marker>
+      <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feColorMatrix in="blur" type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 0 0.35 0" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+      <linearGradient id="tfG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="${toneStroke("risk", 0.40)}"/>
+        <stop offset="1" stop-color="${toneStroke("output", 0.40)}"/>
+      </linearGradient>
+    </defs>`;
+
+    const nodes = labels.slice(0, 4).map((t, i) => {
+      const x = x0 + i * (nodeW + gap);
+      return { t, x, y, tone: toneFor(t), emphasis: i === 3 };
+    });
+
+    const arrows = nodes
+      .slice(0, -1)
+      .map((n, i) => {
+        const a = n;
+        const b = nodes[i + 1];
+        const x1 = a.x + nodeW;
+        const y1 = a.y + nodeH / 2;
+        const x2 = b.x;
+        const y2 = b.y + nodeH / 2;
+        return svgArrowPath({
+          d: `M ${x1} ${y1} L ${x2} ${y2}`,
+          tone: b.tone,
+          width: 2.2,
+          dashed: true,
+          opacity: 0.24,
+        });
+      })
+      .join("");
+
+    const blocks = nodes
+      .map((n) =>
+        svgNode({
+          x: n.x,
+          y: n.y,
+          w: nodeW,
+          h: nodeH,
+          text: n.t,
+          tone: n.tone,
+          emphasis: n.emphasis,
+          glowId: "softGlow",
+        })
+      )
+      .join("");
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Triage flow">
+      ${defs}
+      <path d="M 60 18 C 220 2, 760 2, 920 18" stroke="url(#tfG)" stroke-width="2" fill="none" opacity="0.8"/>
+      ${arrows}
+      ${blocks}
+    </svg>`;
+  }
+
   function renderRail(targetEl, items) {
     if (!items?.length) return;
     const wrap = el("div", "rail");
@@ -359,6 +447,12 @@
 
     if (s.terminal?.length) {
       renderTerminal(slideRoot, s.terminal);
+    }
+
+    if (s.triageFlow?.length) {
+      const flow = el("div", "triage-flow");
+      flow.innerHTML = diagramTriageFlow(s.triageFlow);
+      slideRoot.appendChild(flow);
     }
 
     if (s.stack?.length) {
@@ -481,6 +575,12 @@
 
     if (s.terminal?.length) {
       renderTerminal(targetEl, s.terminal);
+    }
+
+    if (s.triageFlow?.length) {
+      const flow = el("div", "triage-flow");
+      flow.innerHTML = diagramTriageFlow(s.triageFlow);
+      targetEl.appendChild(flow);
     }
 
     if (s.stack?.length) {

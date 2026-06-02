@@ -428,6 +428,21 @@ ul {
   color: rgba(255, 255, 255, 0.86);
 }
 
+.triage-flow {
+  margin-top: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.triage-flow svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 20vh;
+}
+
 .stack {
   margin-top: 14px;
   position: relative;
@@ -958,6 +973,14 @@ li strong {
   .terminal-rows {
     font-size: 13px;
     padding: 12px 12px;
+  }
+
+  .triage-flow {
+    margin-top: 10px;
+  }
+
+  .triage-flow svg {
+    max-height: 18vh;
   }
 
   .stack {
