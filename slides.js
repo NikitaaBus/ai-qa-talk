@@ -142,32 +142,46 @@
     {
       kicker: "Кейс 2",
       title: "Анализ изменений (docs + code)",
+      pain: "Один небольшой diff может сломать критичный сценарий — и это не видно без impact analysis.",
       bullets: [
-        { lead: "Doc diff", text: "affected requirements → affected suites/checks → обновлённый план тестирования." },
-        { lead: "Code diff", text: "зоны риска → affected scenarios → минимальный набор критических проверок." },
-        {
-          lead: "Не замена ревью",
-          text: "а быстрый QA impact analysis: связываем технические изменения с пользовательскими рисками.",
-        },
+        { lead: "Docs", text: "diff → affected requirements → обновить suites/checks." },
+        { lead: "Code", text: "diff → зоны риска → affected scenarios → minimal checks." },
+        { lead: "Value", text: "быстро связываем изменения с пользовательскими рисками." },
       ],
+      takeaway: "Diff → impact → проверяем только важное (и объясняем почему).",
       aside: {
         title: "Что выигрываем",
         bullets: ["меньше ручного сравнения", "меньше зависимости от памяти", "прозрачность перед регрессией/релизом"],
       },
     },
     {
+      kicker: "Кейс 2 · схема",
+      title: "Change impact: docs + code → test plan",
+      layoutMode: "diagram",
+      diagram: diagramChain(["Doc/Code diff", "Agent", "Risk areas", "Affected scenarios", "Updated plan"], { size: "xl" }),
+      diagramSize: "xl",
+    },
+    {
       kicker: "Кейс 3",
       title: "Генерация и поддержка автотестов",
+      pain: "Автотесты быстро растут и быстро становятся дорогими в поддержке без строгого процесса.",
       bullets: [
-        { lead: "Цель", text: "не «ИИ пишет код», а управляемый pipeline автоматизации поверх фреймворка." },
-        { lead: "Оркестратор", text: "план → код → ревью → доработка, пока не будет без замечаний." },
-        { lead: "Трассируемость", text: "Qase ID → автотест (@Qase) → изменения → логи/артефакты → итог." },
+        { lead: "Pipeline", text: "plan → code → review → fix → approved." },
+        { lead: "Traceability", text: "Qase ID → @Qase test → runs/evidence → итог." },
+        { lead: "Quality", text: "единый стиль + меньше flaky/дубликатов." },
       ],
-      diagram: diagramChain(["Qase case", "Planner", "Dev agent", "Reviewer", "APPROVED PR"]),
-      aside: {
-        title: "Роли",
-        bullets: ["Planner (что/как/зачем)", "Developer (код + page objects)", "Reviewer (барьер качества)"],
+      beforeAfter: {
+        before: "Просим ИИ «напиши тест» → получаем код без стандарта и с риском flakiness.",
+        after: "Оркестратор ведёт роли: Planner/Dev/Reviewer → предсказуемый стиль и quality gate.",
       },
+      takeaway: "ИИ ускоряет automation только внутри строгого процесса.",
+    },
+    {
+      kicker: "Кейс 3 · схема",
+      title: "Autotests pipeline: roles + quality gate",
+      layoutMode: "diagram",
+      diagram: diagramChain(["Qase case", "Planner", "Dev agent", "Reviewer", "APPROVED PR"], { size: "xl" }),
+      diagramSize: "xl",
     },
     {
       kicker: "Кейс 3 · критерии",
@@ -182,14 +196,17 @@
     {
       kicker: "Кейс 4",
       title: "Evidence‑first в agentic‑подходе",
+      pain: "Тест упал, но причины не видно — без evidence triage превращается в ручную отладку.",
       bullets: [
-        { lead: "Если тест упал", text: "нужен не только «fail», а контекст: screenshot, UI‑dump, шаги, состояние UI." },
-        {
-          lead: "Агент как оператор с runbook",
-          text: "собирает evidence, классифицирует: product bug vs flaky vs env/data vs locator/timing.",
-        },
-        { lead: "Feedback loop", text: "исправляем паттерн и фиксируем его как правило для следующих прогонов." },
+        { lead: "Evidence", text: "screenshot + UI‑dump + шаги + состояние UI." },
+        { lead: "Triage", text: "product bug vs flaky vs env/data vs locator/timing." },
+        { lead: "Loop", text: "фиксируем паттерн как правило для следующих прогонов." },
       ],
+      beforeAfter: {
+        before: "Fail → QA вручную разбирает «что было на экране» и почему не сработало.",
+        after: "Fail → evidence пакет → классификация причины → стабилизация + обновление runbook.",
+      },
+      takeaway: "Не «упал тест», а полный контекст падения и следующий шаг.",
       aside: {
         title: "История",
         bullets: ["“tap ≠ focus” → видно по evidence → правим взаимодействие → закрепляем паттерн"],
@@ -217,14 +234,17 @@
     {
       kicker: "Кейс 5",
       title: "Регрессия и приоритизация проверок",
+      pain: "Регресс растёт быстрее продукта: дубли, flaky и проверки «по привычке».",
       bullets: [
-        { lead: "Проблема", text: "регресс растёт: дубли, устаревшие проверки, flaky, «мы всегда так делали»." },
-        {
-          lead: "Решение",
-          text: "аналитический слой: классификация по рискам/ценности + связь с changes и историей падений.",
-        },
-        { lead: "Выход", text: "smoke, critical path, high‑risk regression, platform matrix, кандидаты на авто." },
+        { lead: "Agent", text: "анализирует регресс как систему, а не как список." },
+        { lead: "Risk-based", text: "smoke / critical path / high‑risk / platform matrix." },
+        { lead: "Outputs", text: "automation candidates + open questions + final recommendation." },
       ],
+      beforeAfter: {
+        before: "Запускаем «всё подряд», потому что так исторически сложилось.",
+        after: "Строим план: smoke → high‑risk → full regression + явные риски и причины.",
+      },
+      takeaway: "ИИ помогает выбрать, что проверять первым — но решение остаётся за QA.",
       aside: {
         title: "Принципы",
         bullets: ["не додумывать данные", "отделять факты от гипотез", "объяснять «почему» приоритизации"],
@@ -233,33 +253,9 @@
     {
       kicker: "Кейс 5 · архитектура",
       title: "Regression Planning Agent: агент + skills",
-      bullets: [
-        {
-          lead: "Идея",
-          text: "не «магический приоритизатор», а аналитический слой над регрессией: классифицирует, объясняет причины и возвращает structured plan.",
-        },
-        {
-          lead: "Один агент",
-          text: "RegressionPlanningAgent выбирает, какие skills подключить, исходя из входных данных (release notes, Qase suite, flaky history и т.д.).",
-        },
-        {
-          lead: "Результат",
-          text: "Smoke set, Critical path, High‑risk regression, Platform matrix, Automation candidates, Open questions, Final recommendation.",
-        },
-      ],
+      layoutMode: "diagram",
       diagram: diagramAgentSkills(),
       diagramSize: "xl",
-      aside: {
-        title: "Skills (пример)",
-        bullets: [
-          "regression-planning (core)",
-          "change-impact-analysis (если есть diff/docs/Jira/release notes)",
-          "qase-regression-analysis (если Qase suite)",
-          "flaky-test-triage (если есть история падений)",
-          "automation-candidate-analysis (если нужен список кандидатов)",
-          "qa-summary-reporter (если нужен итог для команды)",
-        ],
-      },
     },
     {
       kicker: "Кейс 6",
@@ -276,26 +272,31 @@
     {
       kicker: "Кейс 7",
       title: "Аналитика: scenario mining + analytics validation",
+      pain: "Если аналитика неверная — решения по продукту и тестированию тоже будут неверными.",
       bullets: [
-        { lead: "Scenario mining", text: "CSV событий → сессии → user journeys → что реально критично покрывать." },
-        {
-          lead: "OEIR формат",
-          text: "Observation → Evidence → Interpretation → Impact → Recommendation (без выдумок).",
-        },
-        {
-          lead: "Analytics validation как контракт",
-          text: "spec → expected → dispatch evidence → persistence → strict compare → diff report.",
-        },
+        { lead: "Mining", text: "events → sessions → journeys → critical paths." },
+        { lead: "Contract", text: "spec → expected → actual → diff report." },
+        { lead: "Triage", text: "dispatch vs persistence → где именно проблема." },
       ],
-      diagram: diagramChain(
-        ["Spec", "Expected events", "UI run", "Dispatch evidence", "CSV export", "Actual events", "Strict compare", "Diff report"],
-        { size: "xl" }
-      ),
-      diagramSize: "xl",
+      beforeAfter: {
+        before: "Проверяем аналитику «глазами»: ушёл ли запрос — непонятно, сохранилось ли событие.",
+        after: "Проверяем как контракт: expected → actual → strict compare → diff report.",
+      },
+      takeaway: "Аналитика — часть качества продукта, её нужно тестировать доказательно.",
       aside: {
         title: "Зачем QA это нужно",
         bullets: ["приоритизация по реальному поведению", "доверие к данным", "быстрый triage расхождений"],
       },
+    },
+    {
+      kicker: "Кейс 7 · схема",
+      title: "Analytics validation: expected → actual → diff",
+      layoutMode: "diagram",
+      diagram: diagramChain(
+        ["Spec", "Expected", "UI run", "Dispatch", "Persistence", "Actual", "Compare", "Diff"],
+        { size: "xl" }
+      ),
+      diagramSize: "xl",
     },
     {
       kicker: "Синтез",
