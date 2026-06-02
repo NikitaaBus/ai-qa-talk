@@ -738,6 +738,21 @@ li strong {
   .slide.is-compact .ba-text {
     font-size: 12px;
   }
+
+  /* Slide-specific: case slide that tends to clip bottom blocks */
+  .slide.is-case-tight .ba-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .slide.is-case-tight .case-takeaway {
+    margin-top: 6px;
+  }
+
+  .slide.is-case-tight .ba-text {
+    line-height: 1.25;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

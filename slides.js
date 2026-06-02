@@ -90,7 +90,7 @@
     {
       kicker: "Кейс 1",
       title: "Анализ требований и тест‑дизайн",
-      layoutMode: "compact",
+      layoutMode: "case-tight",
       pain: "QA тратит время на ручной разбор требований — и всё равно рискует пропустить важное.",
       bullets: [
         { lead: "Agent", text: "делает REQ‑cards, gaps/questions, checks/suites, coverage matrix." },
@@ -359,6 +359,7 @@
     slideRoot.classList.toggle("is-diagram", s.layoutMode === "diagram");
     slideRoot.classList.toggle("is-map", s.layoutMode === "map");
     slideRoot.classList.toggle("is-compact", s.layoutMode === "compact");
+    slideRoot.classList.toggle("is-case-tight", s.layoutMode === "case-tight");
     slideRoot.classList.remove("overflow-1", "overflow-2");
 
     if (s.kicker) slideRoot.appendChild(el("div", "kicker", s.kicker));
@@ -449,6 +450,7 @@
     targetEl.classList.toggle("is-diagram", s.layoutMode === "diagram");
     targetEl.classList.toggle("is-map", s.layoutMode === "map");
     targetEl.classList.toggle("is-compact", s.layoutMode === "compact");
+    targetEl.classList.toggle("is-case-tight", s.layoutMode === "case-tight");
 
     if (s.kicker) targetEl.appendChild(el("div", "kicker", s.kicker));
     targetEl.appendChild(el(s.title.length > 26 ? "h2" : "h1", "", s.title));
