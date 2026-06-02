@@ -348,28 +348,50 @@ li strong {
   }
 
   .slide {
-    padding: 30px 34px;
+    padding: 22px 28px;
   }
 
   h1 {
-    font-size: 44px;
+    font-size: 40px;
   }
 
   h2 {
-    font-size: 30px;
+    font-size: 28px;
   }
 
   p {
     font-size: 18px;
   }
 
+  .kicker {
+    margin-bottom: 10px;
+  }
+
   ul {
-    gap: 10px;
+    margin-top: 12px;
+    gap: 8px;
   }
 
   li {
     font-size: 16px;
-    padding: 12px 14px;
+    padding: 10px 12px;
+  }
+
+  .grid-2 {
+    gap: 14px;
+  }
+
+  .aside {
+    padding: 12px 12px;
+  }
+
+  .aside-title {
+    margin-bottom: 8px;
+  }
+
+  .aside li {
+    font-size: 14px;
+    padding: 10px 12px;
   }
 
   .diagram {
@@ -377,11 +399,11 @@ li strong {
   }
 
   .diagram svg {
-    max-height: 34vh;
+    max-height: 40vh;
   }
 
   .diagram.is-xl svg {
-    max-height: 36vh;
+    max-height: 44vh;
   }
 }
 
