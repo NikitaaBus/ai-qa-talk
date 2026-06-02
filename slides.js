@@ -753,7 +753,7 @@
       { id: "PDF/Spec", x: 490, y: 56 },
       { id: "REQ‑cards", x: 260, y: 140 },
       { id: "Gaps/Questions", x: 720, y: 140 },
-      { id: "Checks", x: 490, y: 160, w: 210, h: 60, center: True },
+      { id: "Checks", x: 490, y: 160, w: 210, h: 60 },
       { id: "Suites", x: 720, y: 250 },
       { id: "Coverage matrix", x: 260, y: 250 },
       { id: "YAML contract", x: 490, y: 294 },
