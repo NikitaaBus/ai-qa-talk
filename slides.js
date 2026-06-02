@@ -87,15 +87,22 @@
           text: "ничего не додумываем. Если данных нет — фиксируем gap, помечаем checks как blocked и показываем, что именно этим заблокировано. Доверие обеспечивается validator/repair/reviewer.",
         },
       ],
-      diagram: diagramChain(
-        ["PDF/Spec", "REQ‑cards", "Gaps/Questions", "Checks", "Suites", "YAML contract", "Validator/Repair/Reviewer"],
-        { size: "xl" }
-      ),
-      diagramSize: "xl",
       aside: {
         title: "Выходные артефакты",
         bullets: ["human‑readable doc", "структурированный YAML", "validator/repair/reviewer цепочка"],
       },
+    },
+    {
+      kicker: "Кейс 1 · схема",
+      title: "Как агент превращает требования в покрытие",
+      bullets: [
+        {
+          lead: "Принцип",
+          text: "схема развёрнута в 2D (верх/бока/низ), чтобы её было удобно читать на 768p и в докладе.",
+        },
+      ],
+      diagram: diagramCoverageMap(),
+      diagramSize: "xl",
     },
     {
       kicker: "Кейс 1 · пример",
@@ -168,11 +175,25 @@
         },
         { lead: "Feedback loop", text: "исправляем паттерн и фиксируем его как правило для следующих прогонов." },
       ],
-      diagram: diagramLoop(["Run step", "Collect evidence", "Triage", "Fix / stabilize", "Update rules"], "Каждый fail оставляет след"),
       aside: {
         title: "История",
         bullets: ["“tap ≠ focus” → видно по evidence → правим взаимодействие → закрепляем паттерн"],
       },
+    },
+    {
+      kicker: "Кейс 4 · схема",
+      title: "Feedback loop: evidence → triage → улучшение правил",
+      bullets: [
+        {
+          lead: "Зачем",
+          text: "делаем отдельный слайд под схему, чтобы не обрезалась по высоте и читалась крупно.",
+        },
+      ],
+      diagram: diagramLoopXL(
+        ["Run step", "Collect evidence", "Triage", "Fix / stabilize", "Update rules"],
+        "Каждый fail оставляет след"
+      ),
+      diagramSize: "xl",
     },
     {
       kicker: "Кейс 4 · реализация",
@@ -641,6 +662,177 @@
         font-family="Manrope, system-ui" font-size="13" fill="rgba(255,255,255,0.70)">${escapeSvg(
           caption
         )}</text>
+    </svg>`;
+  }
+
+  function diagramLoopXL(labels, caption) {
+    const width = 980;
+    const height = 360;
+    const nodeW = 210;
+    const nodeH = 56;
+    const fontSize = 16;
+
+    const pts = [
+      { x: 490, y: 66 },
+      { x: 850, y: 146 },
+      { x: 720, y: 266 },
+      { x: 260, y: 266 },
+      { x: 130, y: 146 },
+    ];
+
+    const nodes = labels
+      .map((t, i) => {
+        const p = pts[i];
+        const x = p.x - nodeW / 2;
+        const y = p.y - nodeH / 2;
+        return `
+          <g>
+            <rect x="${x}" y="${y}" rx="16" ry="16" width="${nodeW}" height="${nodeH}"
+              fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.16)"/>
+            <text x="${p.x}" y="${p.y + 8}" text-anchor="middle"
+              font-family="Manrope, system-ui" font-size="${fontSize}" fill="rgba(255,255,255,0.86)">${escapeSvg(
+                t
+              )}</text>
+          </g>`;
+      })
+      .join("");
+
+    const edgePoint = (from, to) => {
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len;
+      const uy = dy / len;
+      return { x: from.x + ux * (nodeW / 2), y: from.y + uy * (nodeH / 2) };
+    };
+
+    const arrows = labels
+      .map((_, i) => {
+        const a = pts[i];
+        const b = pts[(i + 1) % pts.length];
+        const start = edgePoint(a, b);
+        const end = edgePoint(b, a);
+        const mx = (start.x + end.x) / 2;
+        const my = (start.y + end.y) / 2;
+        const bend = i % 2 === 0 ? -22 : 22;
+        return `<path d="M ${start.x} ${start.y} Q ${mx} ${my + bend} ${end.x} ${end.y}" stroke="rgba(255,255,255,0.26)" stroke-width="2.4" fill="none" marker-end="url(#arrow)"/>`;
+      })
+      .join("");
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Схема feedback loop (крупно)">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.28)"/>
+        </marker>
+        <linearGradient id="loopgxl" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(124,92,255,0.45)"/>
+          <stop offset="1" stop-color="rgba(37,214,199,0.40)"/>
+        </linearGradient>
+      </defs>
+      <circle cx="490" cy="175" r="88" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)"/>
+      <path d="M 402 175 A 88 88 0 1 0 560 132" stroke="url(#loopgxl)" stroke-width="3.2" fill="none" opacity="0.9"/>
+      <text x="490" y="170" text-anchor="middle" font-family="Manrope, system-ui" font-size="16" fill="rgba(255,255,255,0.90)">Evidence‑first</text>
+      <text x="490" y="192" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" fill="rgba(255,255,255,0.72)">feedback loop</text>
+      ${arrows}
+      ${nodes}
+      <text x="490" y="${height - 22}" text-anchor="middle"
+        font-family="Manrope, system-ui" font-size="13" fill="rgba(255,255,255,0.72)">${escapeSvg(
+          caption
+        )}</text>
+    </svg>`;
+  }
+
+  function diagramCoverageMap() {
+    const width = 980;
+    const height = 360;
+    const nodeW = 200;
+    const nodeH = 54;
+    const fontSize = 15;
+
+    const nodes = [
+      { id: "PDF/Spec", x: 490, y: 56 },
+      { id: "REQ‑cards", x: 260, y: 140 },
+      { id: "Gaps/Questions", x: 720, y: 140 },
+      { id: "Checks", x: 490, y: 160, w: 210, h: 60, center: True },
+      { id: "Suites", x: 720, y: 250 },
+      { id: "Coverage matrix", x: 260, y: 250 },
+      { id: "YAML contract", x: 490, y: 294 },
+      { id: "Validator/Repair/Reviewer", x: 490, y: 336 },
+    ];
+
+    const byId = new Map(nodes.map((n) => [n.id, n]));
+    const getWH = (n) => ({ w: n.w || nodeW, h: n.h || nodeH });
+    const edgePoint = (from, to) => {
+      const f = byId.get(from);
+      const t = byId.get(to);
+      if (!f || !t) return { x1: 0, y1: 0, x2: 0, y2: 0 };
+      const fw = getWH(f).w;
+      const fh = getWH(f).h;
+      const tw = getWH(t).w;
+      const th = getWH(t).h;
+      const dx = t.x - f.x;
+      const dy = t.y - f.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len;
+      const uy = dy / len;
+      return {
+        x1: f.x + ux * (fw / 2),
+        y1: f.y + uy * (fh / 2),
+        x2: t.x - ux * (tw / 2),
+        y2: t.y - uy * (th / 2),
+      };
+    };
+
+    const links = [
+      ["PDF/Spec", "REQ‑cards"],
+      ["PDF/Spec", "Gaps/Questions"],
+      ["REQ‑cards", "Checks"],
+      ["Gaps/Questions", "Checks"],
+      ["Checks", "Suites"],
+      ["Checks", "Coverage matrix"],
+      ["Suites", "YAML contract"],
+      ["Coverage matrix", "YAML contract"],
+      ["YAML contract", "Validator/Repair/Reviewer"],
+    ];
+
+    const paths = links
+      .map(([a, b]) => {
+        const p = edgePoint(a, b);
+        const mx = (p.x1 + p.x2) / 2;
+        const my = (p.y1 + p.y2) / 2;
+        const bend = a === "PDF/Spec" ? -10 : 0;
+        return `<path d="M ${p.x1} ${p.y1} Q ${mx} ${my + bend} ${p.x2} ${p.y2}" stroke="rgba(255,255,255,0.24)" stroke-width="2.2" fill="none" marker-end="url(#arr)"/>`;
+      })
+      .join("");
+
+    const draw = nodes
+      .map((n) => {
+        const { w, h } = getWH(n);
+        const x = n.x - w / 2;
+        const y = n.y - h / 2;
+        const isCenter = n.id === "Checks";
+        const fill = isCenter ? "rgba(124,92,255,0.14)" : "rgba(255,255,255,0.06)";
+        const stroke = isCenter ? "rgba(124,92,255,0.40)" : "rgba(255,255,255,0.14)";
+        return `
+          <g>
+            <rect x="${x}" y="${y}" rx="16" ry="16" width="${w}" height="${h}" fill="${fill}" stroke="${stroke}"/>
+            <text x="${n.x}" y="${n.y + 7}" text-anchor="middle"
+              font-family="Manrope, system-ui" font-size="${fontSize}" fill="rgba(255,255,255,0.86)">${escapeSvg(
+                n.id
+              )}</text>
+          </g>`;
+      })
+      .join("");
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Карта покрытия требований">
+      <defs>
+        <marker id="arr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.28)"/>
+        </marker>
+      </defs>
+      <rect x="12" y="12" width="${width - 24}" height="${height - 24}" rx="18" fill="rgba(0,0,0,0)" stroke="rgba(255,255,255,0.06)"/>
+      ${paths}
+      ${draw}
     </svg>`;
   }
 
