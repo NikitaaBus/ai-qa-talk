@@ -63,8 +63,8 @@
       kicker: "Case 2",
       title: "Change impact",
       context: "Diff есть — impact неочевиден. Нужен быстрый bridge до тест‑плана.",
-      layoutMode: "diagonal-flow",
-      diagram: diagramDiagonalFlow(["Doc diff", "Code diff", "Affected", "Min set", "Plan"]),
+      layoutMode: "diagram",
+      diagram: diagramChangeImpactForkJoin(),
       diagramSize: "xl",
       takeaway: "Вывод: Проверяем минимум критичного — осознанно.",
     },
@@ -73,13 +73,7 @@
       title: "Autotests pipeline",
       context: "Не «ИИ пишет тест», а процесс: план → код → ревью.",
       layoutMode: "role-triangle",
-      diagram: diagramRoleTriangle({
-        a: "Planner",
-        b: "Dev agent",
-        c: "Reviewer",
-        center: "Quality gate",
-        bottom: "Approved",
-      }),
+      diagram: diagramAutotestsTriangle(),
       diagramSize: "xl",
       takeaway: "Вывод: ИИ ускоряет automation только в строгих правилах.",
     },
@@ -97,10 +91,7 @@
       title: "Regression planning",
       context: "Регресс растёт: дубли, flaky, low-value — нужен risk‑based план.",
       layoutMode: "hub-skills",
-      diagram: diagramHubSkills({
-        center: "Regression agent",
-        nodes: ["Impact", "Qase", "Flaky", "Automation", "Summary"],
-      }),
+      diagram: diagramRegressionPlanningAgent(),
       diagramSize: "xl",
       takeaway: "Вывод: План объясняет «почему» и порядок проверок.",
     },
@@ -121,8 +112,9 @@
       kicker: "Case 7",
       title: "Analytics validation",
       context: "Если аналитика неверна — решения неверны. Проверяем как контракт.",
-      layoutMode: "contract-stack",
-      stack: ["SPEC", "EXPECTED", "UI RUN", "DISPATCH", "PERSISTENCE", "ACTUAL", "DIFF"],
+      layoutMode: "diagram",
+      diagram: diagramAnalyticsValidationStack(),
+      diagramSize: "xl",
       takeaway: "Вывод: expected → actual → diff = доказательная проверка.",
     },
     {
@@ -742,6 +734,65 @@
     </svg>`;
   }
 
+  // Shared semantic tones for SVG diagrams
+  const TONE = {
+    input: { rgb: "74,163,255" }, // blue
+    agent: { rgb: "124,92,255" }, // purple
+    risk: { rgb: "255,202,92" }, // amber
+    human: { rgb: "37,214,199" }, // teal
+    output: { rgb: "110,231,168" }, // green
+    neutral: { rgb: "255,255,255" }, // gray/white
+  };
+
+  function toneFill(tone, a = 0.12) {
+    const t = TONE[tone] || TONE.neutral;
+    return `rgba(${t.rgb},${a})`;
+  }
+
+  function toneStroke(tone, a = 0.42) {
+    const t = TONE[tone] || TONE.neutral;
+    return `rgba(${t.rgb},${a})`;
+  }
+
+  function svgNode({ x, y, w, h, text, tone = "neutral", emphasis = false, dashed = false, caption }) {
+    const rx = 16;
+    const fill = toneFill(tone, emphasis ? 0.18 : 0.10);
+    const stroke = toneStroke(tone, emphasis ? 0.58 : 0.38);
+    const dash = dashed ? 'stroke-dasharray="6 8"' : "";
+    const sw = emphasis ? 2.2 : 1.8;
+    const label = escapeSvg(String(text || ""));
+    return `<g>
+      <rect x="${x}" y="${y}" rx="${rx}" ry="${rx}" width="${w}" height="${h}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${dash}/>
+      ${
+        caption
+          ? `<text x="${x + w / 2}" y="${y - 10}" text-anchor="middle" font-family="Manrope, system-ui" font-size="11" fill="rgba(255,255,255,0.60)">${escapeSvg(
+              caption
+            )}</text>`
+          : ""
+      }
+      <text x="${x + w / 2}" y="${y + h / 2 + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" font-weight="700" fill="rgba(255,255,255,0.86)">${label}</text>
+    </g>`;
+  }
+
+  function svgChip({ x, y, text, tone = "agent" }) {
+    const w = Math.max(92, Math.min(180, String(text).length * 8 + 46));
+    const h = 30;
+    return `<g>
+      <rect x="${x}" y="${y}" rx="999" ry="999" width="${w}" height="${h}" fill="${toneFill(
+        tone,
+        0.12
+      )}" stroke="${toneStroke(tone, 0.40)}" stroke-width="1.4"/>
+      <text x="${x + w / 2}" y="${y + 20}" text-anchor="middle" font-family="Manrope, system-ui" font-size="12" font-weight="700" fill="rgba(255,255,255,0.82)">${escapeSvg(
+        text
+      )}</text>
+    </g>`;
+  }
+
+  function svgArrowPath({ d, tone = "neutral", width = 2, dashed = false, marker = "arrS", opacity = 0.26 }) {
+    const dash = dashed ? 'class="conn dash"' : 'class="conn"';
+    return `<path ${dash} d="${d}" stroke="${toneStroke(tone, opacity)}" stroke-width="${width}" fill="none" marker-end="url(#${marker})"/>`;
+  }
+
   function diagramCoverageMap() {
     const width = 980;
     const height = 360;
@@ -805,17 +856,37 @@
       })
       .join("");
 
+    const toneFor = (id) => {
+      if (id === "PDF/Spec") return "input";
+      if (id === "REQ‑cards") return "agent";
+      if (id === "Gaps/Questions") return "risk";
+      if (id === "Checks") return "agent";
+      if (id === "Suites" || id === "Coverage matrix" || id === "YAML contract") return "output";
+      if (id === "Validator/Repair/Reviewer") return "human";
+      return "neutral";
+    };
+
     const draw = nodes
       .map((n) => {
         const { w, h } = getWH(n);
         const x = n.x - w / 2;
         const y = n.y - h / 2;
-        const isCenter = n.id === "Checks";
-        const fill = isCenter ? "rgba(124,92,255,0.14)" : "rgba(255,255,255,0.06)";
-        const stroke = isCenter ? "rgba(124,92,255,0.40)" : "rgba(255,255,255,0.14)";
+        const tone = toneFor(n.id);
+        const isGate = n.id === "Validator/Repair/Reviewer";
+        const fill = toneFill(tone, isGate ? 0.16 : 0.11);
+        const stroke = toneStroke(tone, isGate ? 0.55 : 0.42);
+        const dash = isGate ? 'stroke-dasharray="6 8"' : "";
+        const cap = isGate ? "QUALITY GATE" : null;
         return `
           <g>
-            <rect x="${x}" y="${y}" rx="16" ry="16" width="${w}" height="${h}" fill="${fill}" stroke="${stroke}"/>
+            <rect x="${x}" y="${y}" rx="16" ry="16" width="${w}" height="${h}" fill="${fill}" stroke="${stroke}" stroke-width="${
+              isGate ? 2.2 : 1.8
+            }" ${dash}/>
+            ${
+              cap
+                ? `<text x="${n.x}" y="${n.y - 12}" text-anchor="middle" font-family="Manrope, system-ui" font-size="11" fill="rgba(255,255,255,0.62)">${cap}</text>`
+                : ""
+            }
             <text x="${n.x}" y="${n.y + 7}" text-anchor="middle"
               font-family="Manrope, system-ui" font-size="${fontSize}" fill="rgba(255,255,255,0.86)">${escapeSvg(
                 n.id
@@ -860,6 +931,8 @@
     const bottom = layoutRow(model.bottom, 276, 110);
     for (const n of [...top, ...mid, ...bottom]) nodePos.set(n.id, n);
 
+    const isCenterLink = (a, b) => a === model.center || b === model.center;
+
     const lines = (model.links || [])
       .map(([a, b]) => {
         const na = nodePos.get(a);
@@ -867,16 +940,33 @@
         if (!na || !nb) return "";
         const mx = (na.x + nb.x) / 2;
         const my = (na.y + nb.y) / 2;
-        const bend = a === model.center || b === model.center ? 0 : -14;
-        return `<path d="M ${na.x} ${na.y} Q ${mx} ${my + bend} ${nb.x} ${nb.y}" stroke="rgba(255,255,255,0.22)" stroke-width="2" fill="none"/>`;
+        const secondary = !isCenterLink(a, b);
+        const bend = secondary ? -14 : 0;
+        const dash = secondary ? 'class="conn dash"' : 'class="conn"';
+        const opacity = secondary ? 0.18 : 0.26;
+        return `<path ${dash} d="M ${na.x} ${na.y} Q ${mx} ${my + bend} ${nb.x} ${nb.y}" stroke="rgba(255,255,255,${opacity})" stroke-width="${
+          secondary ? 1.7 : 2.2
+        }" fill="none"/>`;
       })
       .join("");
+
+    const toneFor = (id) => {
+      if (id === model.center) return "human";
+      const allInputs = new Set([...(model.top || [])]);
+      const allProcess = new Set([...(model.mid || [])]);
+      const allOutputs = new Set([...(model.bottom || [])]);
+      if (allInputs.has(id)) return "input";
+      if (allProcess.has(id)) return "agent";
+      if (allOutputs.has(id)) return "output";
+      return "neutral";
+    };
 
     const drawNode = (n, isCenter = false) => {
       const x = n.x - n.w / 2;
       const y = n.y - n.h / 2;
-      const fill = isCenter ? "rgba(124,92,255,0.16)" : "rgba(255,255,255,0.06)";
-      const stroke = isCenter ? "rgba(124,92,255,0.42)" : "rgba(255,255,255,0.14)";
+      const tone = toneFor(n.id);
+      const fill = toneFill(tone, isCenter ? 0.18 : 0.10);
+      const stroke = toneStroke(tone, isCenter ? 0.55 : 0.35);
       return `
         <g>
           <rect x="${x}" y="${y}" rx="16" ry="16" width="${n.w}" height="${n.h}" fill="${fill}" stroke="${stroke}"/>
@@ -1232,6 +1322,287 @@
           bottom.t
         )}</text>
       </g>
+    </svg>`;
+  }
+
+  function diagramChangeImpactForkJoin() {
+    const width = 980;
+    const height = 360;
+
+    const defs = `<defs>
+      <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.26)"/>
+      </marker>
+      <linearGradient id="ciG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${toneStroke("input", 0.55)}"/>
+        <stop offset="1" stop-color="${toneStroke("agent", 0.55)}"/>
+      </linearGradient>
+    </defs>`;
+
+    const leftA = { x: 120, y: 92, w: 180, h: 52, text: "Doc diff", tone: "input" };
+    const leftB = { x: 120, y: 168, w: 180, h: 52, text: "Code diff", tone: "input" };
+    const agent = { x: 360, y: 126, w: 220, h: 66, text: "Impact agent", tone: "agent", emphasis: true };
+
+    const out = [
+      { x: 650, y: 72, w: 240, h: 52, text: "Risk areas", tone: "risk" },
+      { x: 650, y: 138, w: 240, h: 52, text: "Affected", tone: "risk" },
+      { x: 650, y: 204, w: 240, h: 52, text: "Minimal checks", tone: "agent" },
+      { x: 650, y: 270, w: 240, h: 52, text: "Updated plan", tone: "output" },
+    ];
+
+    const nodes = [
+      svgNode({ ...leftA, x: leftA.x, y: leftA.y }),
+      svgNode({ ...leftB, x: leftB.x, y: leftB.y }),
+      svgNode({ ...agent, x: agent.x, y: agent.y }),
+      ...out.map((n) => svgNode({ ...n, x: n.x, y: n.y })),
+    ].join("");
+
+    const a1 = svgArrowPath({
+      d: `M ${leftA.x + leftA.w} ${leftA.y + leftA.h / 2} C 300 ${leftA.y + 20}, 320 ${agent.y + 10}, ${agent.x} ${
+        agent.y + agent.h / 2
+      }`,
+      tone: "input",
+      width: 2.2,
+      dashed: false,
+      opacity: 0.36,
+    });
+    const a2 = svgArrowPath({
+      d: `M ${leftB.x + leftB.w} ${leftB.y + leftB.h / 2} C 300 ${leftB.y + 20}, 320 ${agent.y + agent.h - 10}, ${agent.x} ${
+        agent.y + agent.h / 2
+      }`,
+      tone: "input",
+      width: 2.2,
+      dashed: false,
+      opacity: 0.36,
+    });
+
+    const outs = out
+      .map((n, i) =>
+        svgArrowPath({
+          d: `M ${agent.x + agent.w} ${agent.y + agent.h / 2} C 610 ${agent.y + 50 + i * 4}, 620 ${n.y + 10}, ${n.x} ${
+            n.y + n.h / 2
+          }`,
+          tone: "agent",
+          width: 2.0,
+          dashed: i < 2,
+          opacity: i < 2 ? 0.22 : 0.30,
+        })
+      )
+      .join("");
+
+    const header = `<path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#ciG)" stroke-width="2" fill="none" opacity="0.8"/>`;
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Change impact fork/join">
+      ${defs}
+      ${header}
+      ${a1}
+      ${a2}
+      ${outs}
+      ${nodes}
+    </svg>`;
+  }
+
+  function diagramAutotestsTriangle() {
+    // Qase case as input, Approved as output; dashed fix loop Reviewer -> Dev.
+    const width = 980;
+    const height = 380;
+    const defs = `<defs>
+      <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.26)"/>
+      </marker>
+      <linearGradient id="atG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${toneStroke("input", 0.55)}"/>
+        <stop offset="1" stop-color="${toneStroke("output", 0.55)}"/>
+      </linearGradient>
+    </defs>`;
+
+    const qase = { x: 110, y: 168, w: 170, h: 52, text: "Qase case", tone: "input" };
+    const A = { x: 400, y: 78, w: 190, h: 56, text: "Planner", tone: "agent" };
+    const B = { x: 640, y: 206, w: 190, h: 56, text: "Dev agent", tone: "agent" };
+    const C = { x: 340, y: 206, w: 190, h: 56, text: "Reviewer", tone: "human" };
+    const gate = { x: 470, y: 158, w: 160, h: 56, text: "Quality gate", tone: "human", emphasis: true };
+    const out = { x: 770, y: 294, w: 180, h: 52, text: "PR ready", tone: "output" };
+
+    const nodes = [
+      svgNode(qase),
+      svgNode(A),
+      svgNode(B),
+      svgNode(C),
+      svgNode(gate),
+      svgNode(out),
+    ].join("");
+
+    const arrows = [
+      svgArrowPath({ d: `M ${qase.x + qase.w} ${qase.y + 26} C 300 178, 320 120, ${A.x} ${A.y + 28}`, tone: "input", width: 2.2, opacity: 0.34 }),
+      svgArrowPath({ d: `M ${A.x + A.w / 2} ${A.y + A.h} Q 520 168 ${B.x + 10} ${B.y + 10}`, tone: "agent", width: 2.0, opacity: 0.30 }),
+      svgArrowPath({ d: `M ${B.x} ${B.y + 28} Q 520 254 ${C.x + C.w} ${C.y + 28}`, tone: "agent", width: 2.0, opacity: 0.26 }),
+      svgArrowPath({ d: `M ${C.x + 40} ${C.y} Q 450 132 ${A.x + 40} ${A.y + A.h}`, tone: "human", width: 2.0, opacity: 0.26 }),
+      // quality gate links
+      svgArrowPath({ d: `M ${A.x + A.w} ${A.y + 28} L ${gate.x} ${gate.y + 28}`, tone: "human", width: 2.0, opacity: 0.30 }),
+      svgArrowPath({ d: `M ${gate.x + gate.w} ${gate.y + 28} L ${B.x} ${B.y + 28}`, tone: "human", width: 2.0, opacity: 0.30 }),
+      svgArrowPath({ d: `M ${B.x + B.w} ${B.y + 28} C 830 236, 860 268, ${out.x} ${out.y + 26}`, tone: "output", width: 2.2, opacity: 0.34 }),
+      // dashed fix loop Reviewer -> Dev
+      svgArrowPath({
+        d: `M ${C.x + C.w} ${C.y + 28} C 520 320, 600 320, ${B.x} ${B.y + 28}`,
+        tone: "risk",
+        width: 2.0,
+        dashed: true,
+        opacity: 0.22,
+      }),
+    ].join("");
+
+    const header = `<path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#atG)" stroke-width="2" fill="none" opacity="0.8"/>`;
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Autotests role triangle">
+      ${defs}
+      ${header}
+      ${arrows}
+      ${nodes}
+    </svg>`;
+  }
+
+  function diagramRegressionPlanningAgent() {
+    const width = 980;
+    const height = 420;
+    const defs = `<defs>
+      <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.26)"/>
+      </marker>
+      <linearGradient id="rpG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${toneStroke("input", 0.50)}"/>
+        <stop offset="1" stop-color="${toneStroke("output", 0.50)}"/>
+      </linearGradient>
+    </defs>`;
+
+    const center = { x: 410, y: 160, w: 160, h: 64, text: "Regression agent", tone: "agent", emphasis: true };
+
+    const left = [
+      { text: "Qase", tone: "input" },
+      { text: "Release notes", tone: "input" },
+      { text: "Flaky list", tone: "risk" },
+      { text: "Bug history", tone: "input" },
+      { text: "Platforms", tone: "input" },
+    ].map((n, i) => ({ ...n, x: 90, y: 66 + i * 60, w: 200, h: 50 }));
+
+    const right = [
+      { text: "Smoke", tone: "output" },
+      { text: "Critical path", tone: "output" },
+      { text: "High risk", tone: "risk" },
+      { text: "Platform matrix", tone: "output" },
+      { text: "Final plan", tone: "output" },
+    ].map((n, i) => ({ ...n, x: 690, y: 66 + i * 60, w: 220, h: 50 }));
+
+    const skills = ["impact", "qase", "flaky", "automation", "summary"];
+    const chips = skills
+      .map((t, i) => svgChip({ x: 250 + i * 138, y: 362, text: t, tone: "agent" }))
+      .join("");
+
+    const nodes = [
+      svgNode(center),
+      ...left.map((n) => svgNode(n)),
+      ...right.map((n) => svgNode(n)),
+    ].join("");
+
+    const links = [
+      ...left.map((n, i) =>
+        svgArrowPath({
+          d: `M ${n.x + n.w} ${n.y + 25} C 320 ${n.y + 25}, 340 ${center.y + 10 + i * 2}, ${center.x} ${center.y + center.h / 2}`,
+          tone: n.tone,
+          width: 1.9,
+          opacity: 0.26,
+          dashed: i === 2,
+        })
+      ),
+      ...right.map((n, i) =>
+        svgArrowPath({
+          d: `M ${center.x + center.w} ${center.y + center.h / 2} C 610 ${center.y + 20 + i * 2}, 640 ${n.y + 25}, ${n.x} ${
+            n.y + 25
+          }`,
+          tone: n.tone,
+          width: 2.0,
+          opacity: 0.28,
+          dashed: i === 2,
+        })
+      ),
+    ].join("");
+
+    const header = `<path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#rpG)" stroke-width="2" fill="none" opacity="0.8"/>`;
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Regression planning hub">
+      ${defs}
+      ${header}
+      ${links}
+      ${nodes}
+      ${chips}
+    </svg>`;
+  }
+
+  function diagramAnalyticsValidationStack() {
+    const width = 980;
+    const height = 420;
+    const defs = `<defs>
+      <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.26)"/>
+      </marker>
+      <linearGradient id="avG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${toneStroke("input", 0.50)}"/>
+        <stop offset="1" stop-color="${toneStroke("output", 0.50)}"/>
+      </linearGradient>
+    </defs>`;
+
+    const layers = [
+      { t: "SPEC", tone: "input" },
+      { t: "EXPECTED EVENTS", tone: "agent" },
+      { t: "UI RUN", tone: "human" },
+      { t: "DISPATCH EVIDENCE", tone: "output" },
+      { t: "PERSISTENCE / CSV", tone: "output" },
+      { t: "ACTUAL EVENTS", tone: "input" },
+      { t: "STRICT COMPARE", tone: "agent" },
+      { t: "DIFF REPORT", tone: "risk" },
+    ];
+
+    const x0 = 160;
+    const y0 = 74;
+    const w = 660;
+    const h = 44;
+    const dy = 36;
+
+    const nodes = layers
+      .map((l, i) =>
+        svgNode({
+          x: x0 + i * 10,
+          y: y0 + i * dy,
+          w,
+          h,
+          text: l.t,
+          tone: l.tone,
+          emphasis: i === 0 || i === layers.length - 1,
+        })
+      )
+      .join("");
+
+    const arrows = layers
+      .slice(0, -1)
+      .map((_, i) =>
+        svgArrowPath({
+          d: `M ${x0 + i * 10 + w - 26} ${y0 + i * dy + h} L ${x0 + (i + 1) * 10 + w - 26} ${
+            y0 + (i + 1) * dy
+          }`,
+          tone: "neutral",
+          width: 1.8,
+          opacity: 0.16,
+          dashed: true,
+        })
+      )
+      .join("");
+
+    const header = `<path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#avG)" stroke-width="2" fill="none" opacity="0.8"/>`;
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Analytics validation stack">
+      ${defs}
+      ${header}
+      ${arrows}
+      ${nodes}
     </svg>`;
   }
 
