@@ -190,17 +190,19 @@ body {
   z-index: 1;
 }
 
-.slide.enter > * {
-  opacity: 0;
-  transform: translate3d(0, 10px, 0);
-  animation: enterUp 520ms ease-out both;
-  animation-delay: var(--d, 0ms);
-}
+@media (prefers-reduced-motion: no-preference) {
+  .deck:not(.is-print) .slide.enter > * {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    animation: enterUp 520ms ease-out both;
+    animation-delay: var(--d, 0ms);
+  }
 
-@keyframes enterUp {
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
+  @keyframes enterUp {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
   }
 }
 
@@ -282,11 +284,13 @@ ul {
   border-color: rgba(255, 255, 255, 0.18);
 }
 
-.slide.enter .board-card {
-  opacity: 0;
-  transform: translate3d(0, 8px, 0);
-  animation: enterUp 520ms ease-out both;
-  animation-delay: var(--d, 0ms);
+@media (prefers-reduced-motion: no-preference) {
+  .deck:not(.is-print) .slide.enter .board-card {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+    animation: enterUp 520ms ease-out both;
+    animation-delay: var(--d, 0ms);
+  }
 }
 
 .board-card.ai {
@@ -368,11 +372,13 @@ ul {
   transform: translate3d(calc(var(--i, 0) * 10px), 0, 0);
 }
 
-.slide.enter .stack-layer {
-  opacity: 0;
-  transform: translate3d(calc(var(--i, 0) * 10px), 10px, 0);
-  animation: enterUp 520ms ease-out both;
-  animation-delay: var(--d, 0ms);
+@media (prefers-reduced-motion: no-preference) {
+  .deck:not(.is-print) .slide.enter .stack-layer {
+    opacity: 0;
+    transform: translate3d(calc(var(--i, 0) * 10px), 10px, 0);
+    animation: enterUp 520ms ease-out both;
+    animation-delay: var(--d, 0ms);
+  }
 }
 
 .slide.is-center .context {
