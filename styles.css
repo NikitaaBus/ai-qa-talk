@@ -329,6 +329,60 @@ ul {
   color: rgba(255, 255, 255, 0.95);
 }
 
+.rail {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.rail-item {
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.16);
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.rail-item.input {
+  border-color: rgba(74, 163, 255, 0.55);
+  background: rgba(74, 163, 255, 0.10);
+}
+.rail-item.agent {
+  border-color: rgba(124, 92, 255, 0.55);
+  background: rgba(124, 92, 255, 0.10);
+}
+.rail-item.risk {
+  border-color: rgba(255, 202, 92, 0.62);
+  background: rgba(255, 202, 92, 0.10);
+}
+.rail-item.human {
+  border-color: rgba(37, 214, 199, 0.55);
+  background: rgba(37, 214, 199, 0.10);
+}
+.rail-item.output {
+  border-color: rgba(110, 231, 168, 0.62);
+  background: rgba(110, 231, 168, 0.10);
+}
+
+.deck:not(.is-print) .rail-item:hover {
+  transform: translate3d(0, -2px, 0);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.30);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.slide.enter .rail-item {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+  animation: enterUp 520ms ease-out both;
+  animation-delay: var(--d, 0ms);
+}
+
 .terminal {
   margin-top: 14px;
   border-radius: 18px;
@@ -879,6 +933,16 @@ li strong {
     margin-top: 10px;
     padding: 10px 12px;
     font-size: 15px;
+  }
+
+  .rail {
+    margin-top: 10px;
+    gap: 8px;
+  }
+
+  .rail-item {
+    padding: 8px 10px;
+    font-size: 12px;
   }
 
   .terminal-rows {

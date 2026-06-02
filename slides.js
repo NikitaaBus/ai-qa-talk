@@ -102,12 +102,9 @@
       kicker: "Контекст",
       title: "QA становится Quality Engineer",
       context: "ИИ помогает быстрее думать, а QA — задаёт рамки и проверяет результат.",
-      cards: [
-        { text: "FRAME", tone: "human" },
-        { text: "CHECK", tone: "human" },
-        { text: "PIPELINE", tone: "ai" },
-        { text: "EVIDENCE", tone: "output" },
-      ],
+      layoutMode: "diagram",
+      diagram: diagramRoleControlPanel(),
+      diagramSize: "xl",
       takeaway: "Вывод: Ответственность остаётся у инженера.",
     },
     {
@@ -153,6 +150,13 @@
       layoutMode: "hub-skills",
       diagram: diagramRegressionPlanningAgent(),
       diagramSize: "xl",
+      rail: [
+        { text: "Smoke", tone: "output" },
+        { text: "Critical Path", tone: "human" },
+        { text: "High Risk", tone: "risk" },
+        { text: "Platform Matrix", tone: "input" },
+        { text: "Final Plan", tone: "output" },
+      ],
       takeaway: "Вывод: План объясняет «почему» и порядок проверок.",
     },
     {
@@ -295,6 +299,18 @@
     targetEl.appendChild(wrap);
   }
 
+  function renderRail(targetEl, items) {
+    if (!items?.length) return;
+    const wrap = el("div", "rail");
+    for (const [idx, it] of items.slice(0, 6).entries()) {
+      const chip = el("div", "rail-item", it.text);
+      chip.style.setProperty("--d", `${idx * 60}ms`);
+      if (it.tone) chip.classList.add(String(it.tone));
+      wrap.appendChild(chip);
+    }
+    targetEl.appendChild(wrap);
+  }
+
   function applyEnterMotion(targetEl) {
     if (deckRoot.classList.contains("is-print")) return;
     targetEl.classList.remove("enter");
@@ -409,6 +425,10 @@
       if (s.diagramSize === "xl") wrap.classList.add("is-xl");
       wrap.innerHTML = s.diagram;
       slideRoot.appendChild(wrap);
+    }
+
+    if (s.rail?.length) {
+      renderRail(slideRoot, s.rail);
     }
 
     if (s.takeaway) {
@@ -527,6 +547,10 @@
       if (s.diagramSize === "xl") wrap.classList.add("is-xl");
       wrap.innerHTML = s.diagram;
       targetEl.appendChild(wrap);
+    }
+
+    if (s.rail?.length) {
+      renderRail(targetEl, s.rail);
     }
 
     if (s.takeaway) {
@@ -1690,6 +1714,126 @@
       ${links}
       ${nodes}
       ${chips}
+    </svg>`;
+  }
+
+  function diagramRoleControlPanel() {
+    const width = 980;
+    const height = 380;
+    const cx = 490;
+    const cy = 168;
+
+    const defs = `<defs>
+      <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.26)"/>
+      </marker>
+      <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feColorMatrix in="blur" type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 0 0.35 0" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+      <linearGradient id="cpG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${toneStroke("human", 0.55)}"/>
+        <stop offset="1" stop-color="${toneStroke("agent", 0.55)}"/>
+      </linearGradient>
+    </defs>`;
+
+    const cardW = 240;
+    const cardH = 62;
+    const leftX = 170;
+    const rightX = 570;
+    const topY = 86;
+    const botY = 186;
+
+    const cards = [
+      { x: leftX, y: topY, text: "FRAME", tone: "human" },
+      { x: rightX, y: topY, text: "PIPELINE", tone: "agent" },
+      { x: leftX, y: botY, text: "CHECK", tone: "input" },
+      { x: rightX, y: botY, text: "EVIDENCE", tone: "output" },
+    ];
+
+    const nodes = cards
+      .map((c, i) => {
+        const phase = (i % 5) * 0.55;
+        return `<g class="float" style="--ph:${phase}s">
+          ${svgNode({ x: c.x, y: c.y, w: cardW, h: cardH, text: c.text, tone: c.tone, glowId: "softGlow" })}
+        </g>`;
+      })
+      .join("");
+
+    const center = `<g filter="url(#softGlow)">
+      <circle cx="${cx}" cy="${cy}" r="34" fill="${toneFill("human", 0.26)}" stroke="${toneStroke(
+        "human",
+        0.78
+      )}" stroke-width="2.4"/>
+      <text x="${cx}" y="${cy + 6}" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" font-weight="800" fill="rgba(255,255,255,0.92)">QA</text>
+    </g>`;
+
+    const link = (x, y, tone) =>
+      `<path class="conn dash" d="M ${cx} ${cy} L ${x} ${y}" stroke="${toneStroke(tone, 0.22)}" stroke-width="2" fill="none"/>`;
+
+    const links = [
+      link(leftX + cardW / 2, topY + cardH / 2, "human"),
+      link(rightX + cardW / 2, topY + cardH / 2, "agent"),
+      link(leftX + cardW / 2, botY + cardH / 2, "input"),
+      link(rightX + cardW / 2, botY + cardH / 2, "output"),
+    ].join("");
+
+    const rail = (() => {
+      const y = 292;
+      const items = [
+        { t: "Executor", tone: "neutral" },
+        { t: "Engineer", tone: "human" },
+        { t: "Quality System Owner", tone: "output" },
+      ];
+      const w = 240;
+      const h = 44;
+      const gap = 16;
+      const total = items.length * w + (items.length - 1) * gap;
+      const x0 = cx - total / 2;
+      const parts = items
+        .map((it, i) =>
+          svgNode({
+            x: x0 + i * (w + gap),
+            y,
+            w,
+            h,
+            text: it.t,
+            tone: it.tone,
+            emphasis: i === 2,
+            glowId: "softGlow",
+          })
+        )
+        .join("");
+      const arrows = items
+        .slice(0, -1)
+        .map((_, i) =>
+          svgArrowPath({
+            d: `M ${x0 + i * (w + gap) + w} ${y + h / 2} L ${x0 + (i + 1) * (w + gap)} ${y + h / 2}`,
+            tone: "agent",
+            width: 2,
+            dashed: true,
+            opacity: 0.22,
+          })
+        )
+        .join("");
+      return arrows + parts;
+    })();
+
+    return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Role transformation panel">
+      ${defs}
+      <path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#cpG)" stroke-width="2" fill="none" opacity="0.8"/>
+      ${links}
+      ${nodes}
+      ${center}
+      ${rail}
     </svg>`;
   }
 
