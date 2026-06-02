@@ -324,6 +324,13 @@ li strong {
   align-items: start;
 }
 
+/* For low-height screens: avoid two-column squeeze */
+@media (max-height: 760px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
 .aside {
   border-radius: 18px;
   padding: 16px 16px;
