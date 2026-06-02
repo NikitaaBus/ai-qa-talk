@@ -463,6 +463,14 @@ li strong {
     gap: 12px;
   }
 
+  .topbar {
+    margin-bottom: -2px;
+  }
+
+  .footer {
+    margin-top: -2px;
+  }
+
   .slide {
     padding: 18px 22px;
   }
@@ -489,7 +497,7 @@ li strong {
   }
 
   li {
-    font-size: 16px;
+    font-size: 15px;
     padding: 9px 11px;
   }
 
