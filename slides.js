@@ -793,64 +793,7 @@
     </svg>`;
   }
 
-  // Shared semantic tones for SVG diagrams
-  const TONE = {
-    input: { rgb: "74,163,255" }, // blue
-    agent: { rgb: "124,92,255" }, // purple
-    risk: { rgb: "255,202,92" }, // amber
-    human: { rgb: "37,214,199" }, // teal
-    output: { rgb: "110,231,168" }, // green
-    neutral: { rgb: "255,255,255" }, // gray/white
-  };
-
-  function toneFill(tone, a = 0.12) {
-    const t = TONE[tone] || TONE.neutral;
-    return `rgba(${t.rgb},${a})`;
-  }
-
-  function toneStroke(tone, a = 0.42) {
-    const t = TONE[tone] || TONE.neutral;
-    return `rgba(${t.rgb},${a})`;
-  }
-
-  function svgNode({ x, y, w, h, text, tone = "neutral", emphasis = false, dashed = false, caption }) {
-    const rx = 16;
-    const fill = toneFill(tone, emphasis ? 0.18 : 0.10);
-    const stroke = toneStroke(tone, emphasis ? 0.58 : 0.38);
-    const dash = dashed ? 'stroke-dasharray="6 8"' : "";
-    const sw = emphasis ? 2.2 : 1.8;
-    const label = escapeSvg(String(text || ""));
-    return `<g>
-      <rect x="${x}" y="${y}" rx="${rx}" ry="${rx}" width="${w}" height="${h}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${dash}/>
-      ${
-        caption
-          ? `<text x="${x + w / 2}" y="${y - 10}" text-anchor="middle" font-family="Manrope, system-ui" font-size="11" fill="rgba(255,255,255,0.60)">${escapeSvg(
-              caption
-            )}</text>`
-          : ""
-      }
-      <text x="${x + w / 2}" y="${y + h / 2 + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" font-weight="700" fill="rgba(255,255,255,0.86)">${label}</text>
-    </g>`;
-  }
-
-  function svgChip({ x, y, text, tone = "agent" }) {
-    const w = Math.max(92, Math.min(180, String(text).length * 8 + 46));
-    const h = 30;
-    return `<g>
-      <rect x="${x}" y="${y}" rx="999" ry="999" width="${w}" height="${h}" fill="${toneFill(
-        tone,
-        0.12
-      )}" stroke="${toneStroke(tone, 0.40)}" stroke-width="1.4"/>
-      <text x="${x + w / 2}" y="${y + 20}" text-anchor="middle" font-family="Manrope, system-ui" font-size="12" font-weight="700" fill="rgba(255,255,255,0.82)">${escapeSvg(
-        text
-      )}</text>
-    </g>`;
-  }
-
-  function svgArrowPath({ d, tone = "neutral", width = 2, dashed = false, marker = "arrS", opacity = 0.26 }) {
-    const dash = dashed ? 'class="conn dash"' : 'class="conn"';
-    return `<path ${dash} d="${d}" stroke="${toneStroke(tone, opacity)}" stroke-width="${width}" fill="none" marker-end="url(#${marker})"/>`;
-  }
+  // (tone helpers moved to top of file)
 
   function diagramCoverageMap() {
     const width = 980;
