@@ -20,24 +20,25 @@
     neutral: { rgb: "255,255,255" }, // gray/white
   };
 
-  function toneFill(tone, a = 0.12) {
+  function toneFill(tone, a = 0.18) {
     const t = TONE[tone] || TONE.neutral;
     return `rgba(${t.rgb},${a})`;
   }
 
-  function toneStroke(tone, a = 0.42) {
+  function toneStroke(tone, a = 0.62) {
     const t = TONE[tone] || TONE.neutral;
     return `rgba(${t.rgb},${a})`;
   }
 
-  function svgNode({ x, y, w, h, text, tone = "neutral", emphasis = false, dashed = false, caption }) {
+  function svgNode({ x, y, w, h, text, tone = "neutral", emphasis = false, dashed = false, caption, glowId = "softGlow" }) {
     const rx = 16;
-    const fill = toneFill(tone, emphasis ? 0.18 : 0.10);
-    const stroke = toneStroke(tone, emphasis ? 0.58 : 0.38);
+    const fill = toneFill(tone, emphasis ? 0.28 : 0.20);
+    const stroke = toneStroke(tone, emphasis ? 0.78 : 0.66);
     const dash = dashed ? 'stroke-dasharray="6 8"' : "";
     const sw = emphasis ? 2.2 : 1.8;
     const label = escapeSvg(String(text || ""));
-    return `<g>
+    const filt = emphasis ? `filter="url(#${glowId})"` : "";
+    return `<g ${filt}>
       <rect x="${x}" y="${y}" rx="${rx}" ry="${rx}" width="${w}" height="${h}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${dash}/>
       ${
         caption
@@ -1205,13 +1206,13 @@
 
   function diagramDiagonalFlow(labels) {
     const width = 980;
-    const height = 320;
     const nodeW = 170;
     const nodeH = 48;
     const startX = 120;
-    const startY = 70;
+    const startY = 60;
     const stepX = 150;
-    const stepY = 52;
+    const stepY = 46;
+    const height = Math.max(340, startY + (labels.length - 1) * stepY + nodeH + 28);
 
     const pts = labels.map((t, i) => ({
       t,
@@ -1250,6 +1251,18 @@
         <marker id="arr" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
           <path d="M0,0 L6,3 L0,6" fill="rgba(255,255,255,0.28)"/>
         </marker>
+        <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feColorMatrix in="blur" type="matrix" values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            0 0 0 0.35 0" result="glow"/>
+          <feMerge>
+            <feMergeNode in="glow"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
         <linearGradient id="dG" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stop-color="rgba(124,92,255,0.55)"/>
           <stop offset="1" stop-color="rgba(255,202,92,0.30)"/>
@@ -1335,6 +1348,18 @@
       <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
         <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.26)"/>
       </marker>
+      <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feColorMatrix in="blur" type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 0 0.35 0" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
       <linearGradient id="ciG" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="${toneStroke("input", 0.55)}"/>
         <stop offset="1" stop-color="${toneStroke("agent", 0.55)}"/>
@@ -1412,6 +1437,18 @@
       <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
         <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.26)"/>
       </marker>
+      <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feColorMatrix in="blur" type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 0 0.35 0" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
       <linearGradient id="atG" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="${toneStroke("input", 0.55)}"/>
         <stop offset="1" stop-color="${toneStroke("output", 0.55)}"/>
@@ -1470,6 +1507,18 @@
       <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
         <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.26)"/>
       </marker>
+      <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feColorMatrix in="blur" type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 0 0.35 0" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
       <linearGradient id="rpG" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="${toneStroke("input", 0.50)}"/>
         <stop offset="1" stop-color="${toneStroke("output", 0.50)}"/>
@@ -1546,6 +1595,18 @@
       <marker id="arrS" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
         <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.26)"/>
       </marker>
+      <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feColorMatrix in="blur" type="matrix" values="
+          1 0 0 0 0
+          0 1 0 0 0
+          0 0 1 0 0
+          0 0 0 0.35 0" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
       <linearGradient id="avG" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stop-color="${toneStroke("input", 0.50)}"/>
         <stop offset="1" stop-color="${toneStroke("output", 0.50)}"/>
