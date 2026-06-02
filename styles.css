@@ -532,71 +532,90 @@ li strong {
 
   /* Dynamic overflow fix (applied by JS) */
   .slide.overflow-1 {
-    padding: 16px 18px;
+    padding: 12px 14px;
   }
 
   .slide.overflow-1 h1 {
-    font-size: 30px;
+    font-size: 26px;
   }
 
   .slide.overflow-1 h2 {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .slide.overflow-1 p {
-    font-size: 14px;
+    font-size: 12.5px;
   }
 
   .slide.overflow-1 li {
-    font-size: 12px;
-    padding: 7px 9px;
-  }
-
-  .slide.overflow-1 .case-pain {
-    font-size: 14px;
-    padding: 8px 9px;
-  }
-
-  .slide.overflow-1 .case-takeaway {
-    font-size: 13px;
-    padding: 7px 9px;
-  }
-
-  .slide.overflow-1 .ba-text {
-    font-size: 12px;
-  }
-
-  .slide.overflow-2 {
-    padding: 14px 16px;
-  }
-
-  .slide.overflow-2 h1 {
-    font-size: 28px;
-  }
-
-  .slide.overflow-2 h2 {
-    font-size: 21px;
-  }
-
-  .slide.overflow-2 p {
-    font-size: 13px;
-  }
-
-  .slide.overflow-2 li {
     font-size: 11px;
     padding: 6px 8px;
   }
 
-  .slide.overflow-2 .case-pain {
-    font-size: 13px;
+  .slide.overflow-1 .case-pain {
+    font-size: 12.5px;
+    padding: 7px 8px;
+    margin-top: 6px;
   }
 
-  .slide.overflow-2 .case-takeaway {
+  .slide.overflow-1 .case-takeaway {
+    font-size: 12px;
+    padding: 6px 8px;
+    margin-top: 6px;
+  }
+
+  .slide.overflow-1 .ba-text {
+    font-size: 10.5px;
+  }
+
+  .slide.overflow-2 {
+    padding: 10px 12px;
+  }
+
+  .slide.overflow-2 h1 {
+    font-size: 24px;
+  }
+
+  .slide.overflow-2 h2 {
+    font-size: 18px;
+  }
+
+  .slide.overflow-2 p {
     font-size: 12px;
   }
 
-  .slide.overflow-2 .ba-text {
+  .slide.overflow-2 li {
+    font-size: 10px;
+    padding: 5px 7px;
+  }
+
+  .slide.overflow-2 .case-pain {
+    font-size: 12px;
+  }
+
+  .slide.overflow-2 .case-takeaway {
     font-size: 11px;
+  }
+
+  .slide.overflow-2 .ba-text {
+    font-size: 10px;
+  }
+
+  .slide.overflow-1 ul,
+  .slide.overflow-2 ul {
+    margin-top: 8px;
+    gap: 5px;
+  }
+
+  .slide.overflow-1 .ba-grid,
+  .slide.overflow-2 .ba-grid {
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .slide.overflow-1 .diagram,
+  .slide.overflow-2 .diagram {
+    margin-top: 8px;
   }
 
   .case-pain {
