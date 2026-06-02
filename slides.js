@@ -1093,7 +1093,7 @@
     const height = 420;
     const cx = width / 2;
     const cy = height / 2 + 12;
-    const r = 150;
+    const r = 152;
     const nodes = model?.nodes || [];
 
     const pts = nodes.map((t, i) => {
@@ -1101,14 +1101,33 @@
       return { t, x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r };
     });
 
+    const toneFor = (t) => {
+      const s = String(t || "").toLowerCase();
+      if (s.includes("req")) return "input";
+      if (s.includes("impact")) return "input";
+      if (s.includes("logs")) return "input";
+      if (s.includes("auto")) return "agent";
+      if (s.includes("regress")) return "agent";
+      if (s.includes("evidence")) return "output";
+      if (s.includes("analytics")) return "output";
+      return "neutral";
+    };
+
     const lines = pts
-      .map(
-        (p) =>
-          `<path class="conn dash" d="M ${cx} ${cy} L ${p.x} ${p.y}" stroke="rgba(255,255,255,0.16)" stroke-width="1.6" fill="none"/>`
-      )
+      .map((p) => {
+        const tone = toneFor(p.t);
+        return `<path class="conn" d="M ${cx} ${cy} L ${p.x} ${p.y}" stroke="${toneStroke(
+          tone,
+          0.20
+        )}" stroke-width="1.8" fill="none"/>`;
+      })
       .join("");
 
-    const orbit = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>`;
+    // Avoid a full orbit circle (it can look like a random loop between nodes on some screens).
+    const orbitArcs = `
+      <path d="M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx} ${cy - r}" stroke="rgba(255,255,255,0.07)" stroke-width="1.5" fill="none"/>
+      <path d="M ${cx} ${cy + r} A ${r} ${r} 0 0 1 ${cx + r} ${cy}" stroke="rgba(255,255,255,0.07)" stroke-width="1.5" fill="none"/>
+    `;
 
     const nodeSvg = pts
       .map((p, i) => {
@@ -1117,18 +1136,28 @@
         const x = p.x - w / 2;
         const y = p.y - h / 2;
         const phase = (i % 6) * 0.7;
+        const tone = toneFor(p.t);
         return `<g class="float" style="--ph:${phase}s">
-          <rect x="${x}" y="${y}" rx="14" width="${w}" height="${h}" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
-          <text x="${p.x}" y="${p.y + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" fill="rgba(255,255,255,0.82)">${escapeSvg(
-            p.t
-          )}</text>
+          ${svgNode({
+            x,
+            y,
+            w,
+            h,
+            text: p.t,
+            tone,
+            emphasis: false,
+            glowId: "heroGlow",
+          })}
         </g>`;
       })
       .join("");
 
     const center = `<g>
-      <circle cx="${cx}" cy="${cy}" r="52" fill="rgba(124,92,255,0.14)" stroke="rgba(124,92,255,0.45)" stroke-width="2"/>
-      <circle cx="${cx}" cy="${cy}" r="40" fill="rgba(0,0,0,0.12)" stroke="rgba(255,255,255,0.14)" stroke-width="1.5"/>
+      <circle cx="${cx}" cy="${cy}" r="58" fill="${toneFill("human", 0.26)}" stroke="${toneStroke(
+        "human",
+        0.78
+      )}" stroke-width="2.4" filter="url(#heroGlow)"/>
+      <circle cx="${cx}" cy="${cy}" r="44" fill="rgba(0,0,0,0.12)" stroke="rgba(255,255,255,0.14)" stroke-width="1.5"/>
       <text x="${cx}" y="${cy + 5}" text-anchor="middle" font-family="Manrope, system-ui" font-size="15" font-weight="700" fill="rgba(255,255,255,0.92)">${escapeSvg(
         model?.center || "QA Engineer"
       )}</text>
@@ -1137,12 +1166,24 @@
     return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="QA orbit">
       <defs>
         <linearGradient id="orbG" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="rgba(124,92,255,0.65)"/>
-          <stop offset="1" stop-color="rgba(37,214,199,0.55)"/>
+          <stop offset="0" stop-color="${toneStroke("agent", 0.65)}"/>
+          <stop offset="1" stop-color="${toneStroke("human", 0.55)}"/>
         </linearGradient>
+        <filter id="heroGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="6" result="blur"/>
+          <feColorMatrix in="blur" type="matrix" values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            0 0 0 0.35 0" result="glow"/>
+          <feMerge>
+            <feMergeNode in="glow"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
       </defs>
       <path d="M 40 46 C 240 8, 740 8, 940 46" stroke="url(#orbG)" stroke-width="2" fill="none" opacity="0.85"/>
-      ${orbit}
+      ${orbitArcs}
       ${lines}
       ${nodeSvg}
       ${center}
@@ -1157,16 +1198,22 @@
     const yTop = 120;
     const gapY = 74;
 
-    const left = (model?.left || []).map((t, i) => ({ t, x: leftX, y: yTop + i * gapY }));
-    const right = (model?.right || []).map((t, i) => ({ t, x: rightX, y: yTop + i * gapY }));
+    const left = (model?.left || []).map((t, i) => ({ t, x: leftX, y: yTop + i * gapY, tone: "input" }));
+    const right = (model?.right || []).map((t, i) => ({ t, x: rightX, y: yTop + i * gapY, tone: "output" }));
 
     const all = [...left, ...right];
 
     const connectors = [
-      ...left.map((p) => `<path class="conn dash" d="M ${p.x} ${p.y} C ${p.x + 90} ${p.y - 10}, ${rightX - 90} ${p.y - 10}, ${rightX} ${p.y}" />`),
+      ...left.map(
+        (p) =>
+          `<path class="conn dash" d="M ${p.x} ${p.y} C ${p.x + 90} ${p.y - 10}, ${rightX - 90} ${p.y - 10}, ${rightX} ${p.y}" stroke="${toneStroke(
+            "agent",
+            0.22
+          )}" stroke-width="2" fill="none"/>`
+      ),
       `<path class="conn dash" d="M ${leftX} ${left[left.length - 1]?.y || 0} C ${leftX + 120} ${height - 70}, ${
         rightX - 120
-      } ${height - 70}, ${rightX} ${right[right.length - 1]?.y || 0}" />`,
+      } ${height - 70}, ${rightX} ${right[right.length - 1]?.y || 0}" stroke="${toneStroke("agent", 0.22)}" stroke-width="2" fill="none"/>`,
     ].join("");
 
     const title = `<text x="${leftX}" y="78" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" fill="rgba(255,255,255,0.58)">${escapeSvg(
@@ -1179,8 +1226,10 @@
     const nodes = all
       .map((p, i) => {
         const phase = (i % 5) * 0.65;
+        const fill = toneFill(p.tone || "neutral", 0.20);
+        const stroke = toneStroke(p.tone || "neutral", 0.70);
         return `<g class="float" style="--ph:${phase}s">
-          <circle cx="${p.x}" cy="${p.y}" r="28" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+          <circle cx="${p.x}" cy="${p.y}" r="28" fill="${fill}" stroke="${stroke}" stroke-width="2"/>
           <text x="${p.x}" y="${p.y + 5}" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" font-weight="700" fill="rgba(255,255,255,0.86)">${escapeSvg(
             p.t
           )}</text>
@@ -1191,14 +1240,24 @@
     return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Cases constellation">
       <defs>
         <linearGradient id="cG" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="rgba(37,214,199,0.40)"/>
-          <stop offset="1" stop-color="rgba(124,92,255,0.40)"/>
+          <stop offset="0" stop-color="${toneStroke("input", 0.45)}"/>
+          <stop offset="1" stop-color="${toneStroke("output", 0.45)}"/>
         </linearGradient>
+        <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.2" fill="rgba(255,255,255,0.08)"/>
+        </pattern>
       </defs>
+      <rect x="12" y="12" width="${width - 24}" height="${height - 24}" rx="18" fill="url(#dots)" opacity="0.9"/>
+      <rect x="84" y="56" width="392" height="${height - 120}" rx="18" fill="${toneFill("input", 0.06)}" stroke="${toneStroke(
+        "input",
+        0.22
+      )}"/>
+      <rect x="504" y="56" width="392" height="${height - 120}" rx="18" fill="${toneFill("output", 0.06)}" stroke="${toneStroke(
+        "output",
+        0.22
+      )}"/>
       <path d="M 40 46 C 240 8, 740 8, 940 46" stroke="url(#cG)" stroke-width="2" fill="none" opacity="0.8"/>
-      <g stroke="rgba(255,255,255,0.14)" stroke-width="1.6" fill="none">
-        ${connectors}
-      </g>
+      ${connectors}
       ${title}
       ${nodes}
     </svg>`;
@@ -1673,11 +1732,11 @@
     const width = 980;
     const height = 380;
     const pts = [
-      { t: labels[0] || "SCREEN", x: 240, y: 120 },
-      { t: labels[1] || "UI DUMP", x: 740, y: 120 },
-      { t: labels[2] || "ACTION LOG", x: 240, y: 250 },
-      { t: labels[3] || "TRIAGE", x: 740, y: 250 },
-      { t: labels[4] || "RULE", x: 490, y: 318 },
+      { t: labels[0] || "SCREEN", x: 240, y: 118, tone: "output" },
+      { t: labels[1] || "UI DUMP", x: 740, y: 118, tone: "output" },
+      { t: labels[2] || "ACTION LOG", x: 240, y: 248, tone: "output" },
+      { t: labels[3] || "TRIAGE", x: 740, y: 248, tone: "risk" },
+      { t: labels[4] || "RULE", x: 490, y: 318, tone: "output" },
     ];
 
     const lines = [
@@ -1693,32 +1752,42 @@
         const q = pts[b];
         const mx = (p.x + q.x) / 2;
         const my = (p.y + q.y) / 2;
-        return `<path class="conn dash" d="M ${p.x} ${p.y} Q ${mx} ${my - 12} ${q.x} ${q.y}" stroke="rgba(255,255,255,0.16)" stroke-width="1.8" fill="none"/>`;
+        const tone = a === 3 || b === 3 ? "risk" : "output";
+        return `<path class="conn dash" d="M ${p.x} ${p.y} Q ${mx} ${my - 12} ${q.x} ${q.y}" stroke="${toneStroke(
+          tone,
+          0.20
+        )}" stroke-width="2" fill="none"/>`;
       })
       .join("");
 
     const node = (p, i) => {
-      const w = p.t === (labels[4] || "RULE") ? 210 : 190;
-      const h = 52;
+      const w = p.t === (labels[4] || "RULE") ? 230 : 200;
+      const h = 54;
       const x = p.x - w / 2;
       const y = p.y - h / 2;
       const phase = (i % 5) * 0.6;
+      const emphasis = p.t === (labels[4] || "RULE");
       return `<g class="float" style="--ph:${phase}s">
-        <rect x="${x}" y="${y}" rx="16" width="${w}" height="${h}" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
-        <text x="${p.x}" y="${p.y + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="14" font-weight="700" fill="rgba(255,255,255,0.86)">${escapeSvg(
-          p.t
-        )}</text>
+        ${svgNode({ x, y, w, h, text: p.t, tone: p.tone, emphasis, glowId: "softGlow" })}
       </g>`;
     };
+
+    const chips = [
+      svgChip({ x: 118, y: 60, text: "screenshot", tone: "output" }),
+      svgChip({ x: 252, y: 60, text: "ui dump", tone: "output" }),
+      svgChip({ x: 368, y: 60, text: "action log", tone: "output" }),
+    ].join("");
 
     return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Evidence board">
       <defs>
         <linearGradient id="eG" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="rgba(110,231,168,0.35)"/>
-          <stop offset="1" stop-color="rgba(255,202,92,0.25)"/>
+          <stop offset="0" stop-color="${toneStroke("output", 0.45)}"/>
+          <stop offset="1" stop-color="${toneStroke("risk", 0.35)}"/>
         </linearGradient>
       </defs>
+      <rect x="12" y="12" width="${width - 24}" height="${height - 24}" rx="18" fill="rgba(0,0,0,0)" stroke="rgba(255,255,255,0.06)"/>
       <path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#eG)" stroke-width="2" fill="none" opacity="0.8"/>
+      ${chips}
       ${lines}
       ${pts.map(node).join("")}
     </svg>`;
@@ -1783,30 +1852,41 @@
     const cy = height / 2 + 10;
     const r = 150;
     const n = Math.max(1, labels.length);
+    const nodeW = 160;
+    const nodeH = 46;
 
     const pts = labels.map((t, i) => {
       const a = (Math.PI * 2 * i) / n - Math.PI / 2;
       return { t, x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r };
     });
 
+    const edgePoint = (from, to) => {
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len;
+      const uy = dy / len;
+      return { x: from.x + ux * (nodeW / 2), y: from.y + uy * (nodeH / 2) };
+    };
+
     const arrows = pts
       .map((p, i) => {
         const q = pts[(i + 1) % n];
-        const mx = (p.x + q.x) / 2;
-        const my = (p.y + q.y) / 2;
-        return `<path class="conn dash" d="M ${p.x} ${p.y} Q ${mx} ${my} ${q.x} ${q.y}" stroke="rgba(255,255,255,0.18)" stroke-width="2" fill="none" marker-end="url(#rArr)"/>`;
+        const a = edgePoint(p, q);
+        const b = edgePoint(q, p);
+        const mx = (a.x + b.x) / 2;
+        const my = (a.y + b.y) / 2;
+        return `<path class="conn dash" d="M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}" stroke="rgba(255,255,255,0.18)" stroke-width="2" fill="none" marker-end="url(#rArr)"/>`;
       })
       .join("");
 
     const nodes = pts
       .map((p, i) => {
-        const w = 160;
-        const h = 46;
-        const x = p.x - w / 2;
-        const y = p.y - h / 2;
+        const x = p.x - nodeW / 2;
+        const y = p.y - nodeH / 2;
         const phase = (i % 8) * 0.5;
         return `<g class="float" style="--ph:${phase}s">
-          <rect x="${x}" y="${y}" rx="16" width="${w}" height="${h}" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+          <rect x="${x}" y="${y}" rx="16" width="${nodeW}" height="${nodeH}" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)"/>
           <text x="${p.x}" y="${p.y + 7}" text-anchor="middle" font-family="Manrope, system-ui" font-size="13" font-weight="700" fill="rgba(255,255,255,0.86)">${escapeSvg(
             p.t
           )}</text>
@@ -1825,6 +1905,7 @@
         </linearGradient>
       </defs>
       <path d="M 60 48 C 220 10, 760 10, 920 48" stroke="url(#rG)" stroke-width="2" fill="none" opacity="0.8"/>
+      <circle cx="${cx}" cy="${cy}" r="${r + 26}" fill="${toneFill("agent", 0.05)}"/>
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
       ${arrows}
       ${nodes}

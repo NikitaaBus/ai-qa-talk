@@ -632,6 +632,98 @@ li strong {
   }
 }
 
+/* Layout-specific subtle identity */
+.slide.is-orbit-hero::after,
+.slide.is-constellation::after,
+.slide.is-diagonal::after,
+.slide.is-role-triangle::after,
+.slide.is-evidence-board::after,
+.slide.is-hub-skills::after,
+.slide.is-terminal::after,
+.slide.is-contract::after,
+.slide.is-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.9;
+}
+
+.slide.is-orbit-hero::after {
+  background:
+    radial-gradient(420px 280px at 50% 55%, rgba(37, 214, 199, 0.10), transparent 62%),
+    radial-gradient(720px 520px at 50% 55%, rgba(124, 92, 255, 0.08), transparent 70%);
+}
+
+.slide.is-constellation::after {
+  background:
+    radial-gradient(800px 500px at 30% 55%, rgba(74, 163, 255, 0.06), transparent 70%),
+    radial-gradient(800px 500px at 70% 55%, rgba(110, 231, 168, 0.06), transparent 70%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 26px
+    );
+  mix-blend-mode: screen;
+}
+
+.slide.is-diagonal::after {
+  background:
+    linear-gradient(135deg, rgba(74, 163, 255, 0.06), transparent 45%),
+    linear-gradient(315deg, rgba(110, 231, 168, 0.06), transparent 45%);
+}
+
+.slide.is-role-triangle::after {
+  background:
+    radial-gradient(500px 420px at 55% 52%, rgba(37, 214, 199, 0.08), transparent 62%),
+    radial-gradient(620px 480px at 55% 52%, rgba(124, 92, 255, 0.07), transparent 70%);
+}
+
+.slide.is-evidence-board::after {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 24px
+    ),
+    radial-gradient(600px 440px at 50% 55%, rgba(110, 231, 168, 0.06), transparent 68%);
+}
+
+.slide.is-hub-skills::after {
+  background:
+    radial-gradient(520px 520px at 50% 52%, rgba(124, 92, 255, 0.06), transparent 66%),
+    radial-gradient(760px 760px at 50% 52%, rgba(74, 163, 255, 0.04), transparent 70%);
+}
+
+.slide.is-terminal::after {
+  background:
+    radial-gradient(680px 460px at 50% 52%, rgba(110, 231, 168, 0.05), transparent 70%),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 18px
+    );
+  opacity: 0.7;
+}
+
+.slide.is-ring::after {
+  background:
+    radial-gradient(520px 520px at 50% 52%, rgba(37, 214, 199, 0.05), transparent 66%),
+    radial-gradient(760px 760px at 50% 52%, rgba(124, 92, 255, 0.05), transparent 70%);
+}
+
+.slide > * {
+  position: relative;
+  z-index: 1;
+}
+
 .diagram.is-xl {
   margin-top: 20px;
 }
