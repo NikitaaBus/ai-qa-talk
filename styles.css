@@ -468,23 +468,23 @@ li strong {
   }
 
   h1 {
-    font-size: 38px;
+    font-size: 36px;
   }
 
   h2 {
-    font-size: 27px;
+    font-size: 26px;
   }
 
   p {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .kicker {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   ul {
-    margin-top: 12px;
+    margin-top: 10px;
     gap: 8px;
   }
 
