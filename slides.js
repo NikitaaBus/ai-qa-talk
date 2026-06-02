@@ -538,7 +538,8 @@
     if (window.innerHeight > 820) return;
     const tooTall = () => targetEl.scrollHeight > targetEl.clientHeight + 2;
 
-    if (!tooTall()) return;
+    // Apply baseline compact scale for *all* slides on low-height screens,
+    // then escalate only if still overflowing.
     targetEl.classList.add("overflow-1");
     if (!tooTall()) return;
     targetEl.classList.add("overflow-2");
